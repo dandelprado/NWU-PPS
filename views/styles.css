@@ -1,3 +1,5 @@
+/* styles.css */
+
 :root {
     --maroon: #800000;
     --yellow: #DAA520;
@@ -6,18 +8,13 @@
     --off-white: #fcfcf0;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body,
 html {
     font-family: 'Open Sans', Arial, sans-serif;
-    background-color: var(--off-white);
-    color: var(--dark-gray);
+    margin: 0;
+    padding: 0;
     height: 100%;
+    background-color: var(--off-white);
 }
 
 .header,
@@ -40,73 +37,83 @@ html {
     align-items: center;
     flex-direction: column;
     min-height: calc(100vh - 132px);
-    width: 100%;
 }
 
 .login-card {
     background: var(--light-gray);
-    padding: 3rem;
+    padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 480px;
+    max-width: 360px;
     margin: 2rem 0;
 }
 
-.login-form label {
-    font-size: 1em;
-    margin-bottom: 0.5em;
-    display: block;
-    color: var(--dark-gray);
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .login-form input[type='text'],
 .login-form input[type='password'] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 1em;
+    width: calc(100% - 24px);
+    padding: 12px;
+    margin-bottom: 0.5rem;
     border: 1px solid var(--dark-gray);
     border-radius: 4px;
+    font-size: 1em;
 }
 
 .login-form button {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border-radius: 4px;
+    width: auto;
+    padding: 12px 20px;
+    margin: 0.5rem 0;
     border: none;
     background-color: var(--yellow);
     color: var(--maroon);
-    font-weight: 600;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    display: block;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .login-form button:hover {
     background-color: var(--dark-gray);
     color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.password-rules {
+    width: calc(100% - 24px);
+    padding: 10px;
+    background: var(--off-white);
+    border-left: 4px solid var(--yellow);
+    margin: 0.5rem 0 2rem;
+    font-size: 0.9em;
+    color: var(--dark-gray);
+    text-align: left;
 }
 
 .footer {
     font-size: 0.8em;
     position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
     padding: 1rem 0;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
     .container {
-        padding: 10px;
+        margin: 1rem;
     }
 
-    .login-card {
-        padding: 1.5rem;
-        max-width: 90%;
-    }
-
-    .footer {
-        position: static;
+    .login-card,
+    .password-rules,
+    .login-form input[type='text'],
+    .login-form input[type='password'],
+    .login-form button {
+        width: auto;
+        padding: 1rem;
     }
 }
