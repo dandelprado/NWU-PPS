@@ -10,22 +10,27 @@
 
 <body>
 
-    <div class="login-card">
-        <h1>Northwestern University<br>Project Proposal System</h1>
-        <form class="login-form" autocomplete="off">
-            <!-- Dummy inputs to prevent autofill -->
-            <input type="text" style="display:none" />
-            <input type="password" style="display:none" />
-            <!-- Actual login fields -->
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required autocomplete="off">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required autocomplete="new-password">
-            <button type="submit">Log In</button>
-        </form>
-        <div class="footer">
-            Developed by: Dan del Prado
+    <div class="header">
+        <h1>NWU Project Proposal System</h1>
+    </div>
+    <div class="container">
+        <div class="login-card">
+            <form class="login-form" autocomplete="off">
+                <!-- Dummy inputs to prevent autofill -->
+                <input type="text" style="display:none" />
+                <input type="password" style="display:none" />
+                <!-- Actual login fields -->
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required autocomplete="off">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required autocomplete="new-password">
+                <button type="submit">Log In</button>
+            </form>
         </div>
+    </div>
+
+    <div class="footer">
+        Developed by: Dan del Prado
     </div>
 
     <script>
@@ -55,7 +60,6 @@
                             window.location.href = '/updateInfo.html';
                         } else {
                             // If everything is complete, go to the main system (dashboard or home page)
-                            // Since you don't have a dashboard, you might redirect to another placeholder page
                             alert('Logged in successfully. Redirecting to the home page.'); // Placeholder for actual redirection
                         }
                     } else {

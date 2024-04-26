@@ -25,8 +25,7 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
-sessionMiddleware(app); // Initialize session management
-app.use('/auth', authRoutes);
+sessionMiddleware(app); app.use('/auth', authRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

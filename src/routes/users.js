@@ -16,6 +16,5 @@ router.get('/', (req, res) => {
     });
 });
 
-// Add additional user routes (POST, PUT, DELETE) here
 
 module.exports = router;

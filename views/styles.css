@@ -1,113 +1,112 @@
-/* Primary color variables */
 :root {
     --maroon: #800000;
-    --maroon-tint: #AA4C50;
-    --neutral-light: #F5F5F5;
-    --neutral-dark: #333;
-    --accent-color: #DAA520;
-    /* Gold */
-    --button-hover: #BA2025;
+    --yellow: #DAA520;
+    --dark-gray: #333333;
+    --light-gray: #f0f0f0;
+    --off-white: #fcfcf0;
 }
 
-/* Global styles */
-body {
-    font-family: 'Lato', sans-serif;
-    /* A more modern font */
-    background-color: var(--neutral-light);
-    color: var(--neutral-dark);
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-/* Card style for forms */
-.login-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    /* Rounded corners for modern look */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+body,
+html {
+    font-family: 'Open Sans', Arial, sans-serif;
+    background-color: var(--off-white);
+    color: var(--dark-gray);
+    height: 100%;
+}
+
+.header,
+.footer {
+    background-color: var(--maroon);
+    color: white;
     width: 100%;
-    max-width: 360px;
-    margin: 1rem;
-    transition: transform 0.3s ease-in-out;
-    /* Smooth transition for hover */
-}
-
-.login-card:hover {
-    transform: translateY(-5px);
-    /* Subtle lift effect */
-}
-
-/* Header styles */
-h1 {
-    color: var(--maroon);
     text-align: center;
-    margin-bottom: 2rem;
-    /* More space below the header */
+    padding: 1rem;
 }
 
-/* Form Styles */
-.login-form {
+.header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+.container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
+    min-height: calc(100vh - 132px);
+    width: 100%;
+}
+
+.login-card {
+    background: var(--light-gray);
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 480px;
+    margin: 2rem 0;
 }
 
 .login-form label {
-    font-weight: 600;
-    /* Slightly bolder */
-    margin-bottom: 0.5rem;
+    font-size: 1em;
+    margin-bottom: 0.5em;
+    display: block;
+    color: var(--dark-gray);
 }
 
-.login-form input {
+.login-form input[type='text'],
+.login-form input[type='password'] {
+    width: calc(100% - 20px);
     padding: 10px;
-    margin-bottom: 1rem;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    /* Rounded borders for inputs */
-    transition: border-color 0.2s;
-}
-
-.login-form input:focus {
-    border-color: var(--maroon-tint);
-    /* Focus color */
-    outline: none;
-    /* Remove default focus outline */
+    margin-bottom: 1em;
+    border: 1px solid var(--dark-gray);
+    border-radius: 4px;
 }
 
 .login-form button {
-    background-color: var(--maroon);
-    color: white;
+    width: calc(100% - 20px);
     padding: 10px;
+    border-radius: 4px;
     border: none;
-    border-radius: 5px;
+    background-color: var(--yellow);
+    color: var(--maroon);
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.3s;
+    display: block;
 }
 
 .login-form button:hover {
-    background-color: var(--button-hover);
-    /* A slightly lighter maroon for hover */
-    transform: scale(1.05);
-    /* Slightly enlarge button on hover */
+    background-color: var(--dark-gray);
+    color: white;
 }
 
-/* Footer styles */
 .footer {
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 0.75rem;
-    color: var(--neutral-dark);
+    font-size: 0.8em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 0;
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
     .login-card {
-        width: 90%;
         padding: 1.5rem;
+        max-width: 90%;
+    }
+
+    .footer {
+        position: static;
     }
 }

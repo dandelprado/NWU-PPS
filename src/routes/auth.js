@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const db = require('../db/database');
 const router = express.Router();
 
-// Helper function to start a session
 function startSession(req, user, res) {
     req.session.user = {
         id: user.UserID,
@@ -33,7 +32,6 @@ router.post('/login', (req, res) => {
                 // Password needs to be changed and profile needs to be completed
                 res.json({ changePassword: true, profileIncomplete: !user.InfoCompleted });
             } else {
-                // Start the user session
                 startSession(req, user, res);
             }
         } else {
@@ -42,7 +40,6 @@ router.post('/login', (req, res) => {
     });
 });
 
-// Combined Password Change and Profile Update Route
 router.post('/change-password-and-update-profile', (req, res) => {
     const { userId, newPassword, firstName, lastName } = req.body;
     const hashedPassword = bcrypt.hashSync(newPassword, 10);

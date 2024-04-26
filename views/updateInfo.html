@@ -5,28 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Your Details - NWU Project Proposal System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-
-    <div class="login-card">
+    <div class="header">
         <h1>Update Your Details</h1>
-        <form class="login-form" id="updateInfoForm" autocomplete="off">
-            <!-- The user ID should be dynamically inserted by your server-side logic -->
-            <input type="hidden" name="userId" value="<!-- Insert User ID Here -->">
+    </div>
+    <div class="container">
+        <div class="login-card">
+            <form class="login-form" id="updateInfoForm" autocomplete="off">
+                <input type="hidden" name="userId" id="userId" value="">
 
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" required>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
 
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" required>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
 
-            <button type="submit">Update Details</button>
-        </form>
-        <div class="footer">
-            Developed by: Dan del Prado
+                <button type="submit">Update Details</button>
+            </form>
         </div>
+    </div>
+    <div class="footer">
+        Developed by: Dan del Prado
     </div>
 
     <script>
@@ -48,10 +51,9 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Handle successful profile update
                         alert('Profile updated successfully.');
                         // Redirect to the home page or dashboard
-                        window.location.href = '/'; // Adjust this to your application's home page
+                        window.location.href = '/';
                     } else {
                         // Handle errors or unsuccessful update
                         alert(data.message || "An error occurred while updating your profile. Please try again.");
