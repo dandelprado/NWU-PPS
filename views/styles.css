@@ -1,0 +1,113 @@
+/* Primary color variables */
+:root {
+    --maroon: #800000;
+    --maroon-tint: #AA4C50;
+    --neutral-light: #F5F5F5;
+    --neutral-dark: #333;
+    --accent-color: #DAA520;
+    /* Gold */
+    --button-hover: #BA2025;
+}
+
+/* Global styles */
+body {
+    font-family: 'Lato', sans-serif;
+    /* A more modern font */
+    background-color: var(--neutral-light);
+    color: var(--neutral-dark);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Card style for forms */
+.login-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    /* Rounded corners for modern look */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 360px;
+    margin: 1rem;
+    transition: transform 0.3s ease-in-out;
+    /* Smooth transition for hover */
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    /* Subtle lift effect */
+}
+
+/* Header styles */
+h1 {
+    color: var(--maroon);
+    text-align: center;
+    margin-bottom: 2rem;
+    /* More space below the header */
+}
+
+/* Form Styles */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form label {
+    font-weight: 600;
+    /* Slightly bolder */
+    margin-bottom: 0.5rem;
+}
+
+.login-form input {
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    /* Rounded borders for inputs */
+    transition: border-color 0.2s;
+}
+
+.login-form input:focus {
+    border-color: var(--maroon-tint);
+    /* Focus color */
+    outline: none;
+    /* Remove default focus outline */
+}
+
+.login-form button {
+    background-color: var(--maroon);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.login-form button:hover {
+    background-color: var(--button-hover);
+    /* A slightly lighter maroon for hover */
+    transform: scale(1.05);
+    /* Slightly enlarge button on hover */
+}
+
+/* Footer styles */
+.footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--neutral-dark);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .login-card {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
