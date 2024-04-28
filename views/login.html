@@ -50,21 +50,11 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.changePassword) {
-                        // If it's the first login, redirect to change password page
-                        window.location.href = '/changePassword.html';
-                    } else if (data.success) {
-                        // If the password has been changed, check if profile is incomplete
-                        if (data.profileIncomplete) {
-                            // Redirect to update profile info page
-                            window.location.href = '/updateInfo.html';
-                        } else {
-                            // If everything is complete, go to the main system (dashboard or home page)
-                            alert('Logged in successfully. Redirecting to the home page.'); // Placeholder for actual redirection
-                        }
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
                     } else {
-                        // Handle login failure
-                        alert(data.message || "Login failed. Please try again.");
+                        alert('Logged in successfully. Redirecting to the home page.'); // Placeholder for actual redirection
+                        window.location.href = '/home'; // Redirect to home or dashboard as needed
                     }
                 })
                 .catch((error) => {
@@ -73,6 +63,7 @@
                 });
         });
     </script>
+
 
 </body>
 
