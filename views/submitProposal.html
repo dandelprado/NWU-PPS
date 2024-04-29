@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Proposal - NWU Project Proposal System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>Submit New Proposal</h1>
+    </div>
+    <div class="container">
+        <div class="form-card">
+            <form class="proposal-form" id="submitProposalForm">
+                <label for="title">Proposal Title:</label>
+                <input type="text" id="title" name="title" required>
+
+                <label for="details">Details:</label>
+                <textarea id="details" name="details" required></textarea>
+
+                <label for="fundingRequired">Funding Required:</label>
+                <input type="checkbox" id="fundingRequired" name="fundingRequired">
+
+                <label for="facilityRequired">Facility Required:</label>
+                <input type="checkbox" id="facilityRequired" name="facilityRequired">
+
+                <button type="submit">Submit Proposal</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        Developed by: Dan del Prado
+    </div>
+
+    <script>
+        document.getElementById('submitProposalForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const details = document.getElementById('details').value;
+            const fundingRequired = document.getElementById('fundingRequired').checked;
+            const facilityRequired = document.getElementById('facilityRequired').checked;
+
+            // Assuming the logged-in user's ID is available globally or retrieved from session
+            const submittedByUserId = LOGGED_IN_USER_ID;
+
+            fetch('/proposals/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, details, submittedByUserId, fundingRequired, facilityRequired }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Proposal submitted successfully.');
+                        // Redirect to dashboard or other page
+                    } else {
+                        alert('Error submitting proposal: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        });
+    </script>
+</body>
+
+</html>

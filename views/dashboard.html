@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NWU Project Proposal System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>NWU Project Proposal System Dashboard</h1>
+    </div>
+    <div class="container">
+        <h2>Welcome back, <span id="username">User</span>!</h2>
+        <div class="dashboard-container">
+            <div class="card">
+                <a href="submitProposal.html">Submit New Proposal</a>
+            </div>
+            <div class="card">
+                <a href="proposalsDashboard.html">View Proposals</a>
+            </div>
+            <div class="card">
+                <a href="updateInfo.html">Update Personal Info</a>
+            </div>
+            <div class="card">
+                <a href="changePassword.html">Change Password</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        Developed by: Dan del Prado
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/auth/user-info', {
+                credentials: 'include' // Ensure credentials are included with the request
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('username').textContent = data.firstName || 'User';
+                    } else {
+                        console.error('Failed to retrieve user info:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('username').textContent = 'User';
+                });
+        });
+    </script>
+</body>
+
+</html>

@@ -95,4 +95,23 @@ router.post('/update-profile', (req, res) => {
     });
 });
 
+// Endpoint to get user info
+router.get('/user-info', (req, res) => {
+    if (req.session && req.session.user) {
+        db.get("SELECT FirstName FROM Users WHERE UserID = ?", [req.session.user.id], (err, row) => {
+            if (err) {
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            if (row) {
+                res.json({ success: true, firstName: row.FirstName });
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+
 module.exports = router;

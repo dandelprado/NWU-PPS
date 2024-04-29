@@ -121,9 +121,35 @@ html {
     background: transparent;
     border: none;
     height: 20px;
-    /* Size of the icon */
 }
 
+.dashboard-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.card {
+    background: var(--light-gray);
+    border: 1px solid var(--dark-gray);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    width: 180px;
+    transition: transform 0.3s ease;
+}
+
+.card a {
+    text-decoration: none;
+    color: var(--dark-gray);
+    font-weight: bold;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 
 @media (max-width: 768px) {

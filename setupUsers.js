@@ -19,7 +19,7 @@ function createUsers() {
         { username: "finance_admin", role: "Finance", password: "finance1234" },
         { username: "dean_cas", role: "Dean", password: "deancas1234" },
         { username: "pres_casso", role: "President", password: "prescasso1234" },
-        // Add other users here...
+        //will add other users soon as I get the complete list
     ];
 
     users.forEach(user => {
@@ -30,10 +30,8 @@ function createUsers() {
             }
 
             if (row) {
-                // User already exists
                 console.log(`User ${user.username} already exists. Skipping.`);
             } else {
-                // User does not exist, insert new user
                 const hashedPassword = bcrypt.hashSync(user.password, 10);
                 db.run(`INSERT INTO Users (Username, Password, RoleID, PasswordChanged, InfoCompleted) VALUES (?, ?, (SELECT RoleID FROM Roles WHERE Title = ?), FALSE, FALSE)`, [user.username, hashedPassword, user.role], function (err) {
                     if (err) {
