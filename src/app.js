@@ -8,11 +8,12 @@ const app = express();
 // Apply session configuration
 sessionConfig(app);
 
-// Make sure all static files are served correctly
 app.use(express.static(path.join(__dirname, '../views')));
 
 app.use(bodyParser.json());
 app.use('/auth', authRoutes);
+
+app.use('/icons', express.static(path.join(__dirname, '../icons')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/login.html'));

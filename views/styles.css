@@ -105,6 +105,27 @@ html {
     width: 100%;
 }
 
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toggle-password {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    height: 20px;
+    /* Size of the icon */
+}
+
+
+
 @media (max-width: 768px) {
     .container {
         margin: 1rem;
@@ -117,5 +138,10 @@ html {
     .login-form button {
         width: auto;
         padding: 1rem;
+    }
+
+    .password-field input[type='password'] {
+        padding-right: 30px;
+        /* Match the non-media query value */
     }
 }

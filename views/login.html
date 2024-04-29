@@ -9,21 +9,23 @@
 </head>
 
 <body>
-
     <div class="header">
         <h1>NWU Project Proposal System</h1>
     </div>
     <div class="container">
         <div class="login-card">
             <form class="login-form" autocomplete="off">
-                <!-- Dummy inputs to prevent autofill -->
-                <input type="text" style="display:none" />
-                <input type="password" style="display:none" />
-                <!-- Actual login fields -->
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required autocomplete="off">
+
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required autocomplete="new-password">
+                <div class="password-field">
+                    <input type="password" id="password" name="password" required autocomplete="off" readonly
+                        onfocus="this.removeAttribute('readonly');">
+                    <img src="/icons/show_password.png" id="togglePassword" class="toggle-password"
+                        alt="Toggle Password Visibility" onclick="togglePasswordVisibility()">
+                </div>
+
                 <button type="submit">Log In</button>
             </form>
         </div>
@@ -34,6 +36,20 @@
     </div>
 
     <script>
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            let passwordInput = document.getElementById('password');
+            let passwordIcon = document.getElementById('togglePassword');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.src = '/icons/hide_password.png';
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.src = '/icons/show_password.png';
+            }
+        }
+
+        // Handle form submission
         document.querySelector('.login-form').addEventListener('submit', function (event) {
             event.preventDefault();
             const formData = {
@@ -43,22 +59,15 @@
 
             fetch('/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.redirectUrl) {
-                        // This assumes the login was successful if there's a redirectUrl
                         window.location.href = data.redirectUrl;
-                    } else if (data.error) {
-                        // Handle the error appropriately
-                        alert(data.error);
                     } else {
-                        // This should not occur if your backend is handling responses correctly
-                        alert('Unexpected response from server.');
+                        alert('Login failed: ' + data.error);
                     }
                 })
                 .catch((error) => {
@@ -67,9 +76,6 @@
                 });
         });
     </script>
-
-
-
 </body>
 
 </html>
