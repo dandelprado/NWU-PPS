@@ -107,37 +107,35 @@ html {
 
 .dashboard-container {
     display: flex;
-    flex-direction: row;
-    /* Aligns items horizontally */
-    justify-content: space-evenly;
-    /* Evenly spaces the cards within the container */
-    width: 100%;
-    /* Full width to allow even spacing */
+    flex-direction: wrap;
+    justify-content: space-around;
     padding: 20px;
-    /* Adds some padding around the container */
 }
 
 .card {
     background-color: var(--off-white);
     border-left: 5px solid var(--maroon);
-    padding: 20px;
+    padding: 15px;
     margin: 10px;
     border-radius: 8px;
-    box-shadow: -8px 0px 15px -10px var(--maroon);
-    /* Shadow effect for depth, cast leftwards */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: var(--card-width);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* Smooth transition for hover effects */
-    width: calc(25% - 20px);
-    /* Calculation to allow for margins in a 4-card setup */
     box-sizing: border-box;
-    /* Ensures padding and border are included in width */
+    cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
     /* Lifts the card on hover */
-    box-shadow: -8px 0px 15px -5px var(--maroon);
+    box-shadow: 0px 6px 12px -5px rgba(0, 0, 0, 0.15);
     /* Enhances the shadow on hover */
+}
+
+.card a {
+    color: var(--dark-gray);
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .button-primary {
@@ -176,6 +174,5 @@ html {
 
     .card {
         width: 90%;
-        /* Wider cards for better readability on small screens */
     }
 }
