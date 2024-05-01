@@ -13,7 +13,7 @@
         <h1>Proposals Dashboard</h1>
     </div>
     <div class="container">
-        <div id="proposalsList" class="proposals-list feedback-animation">
+        <div id="proposalsList" class="proposals-list">
             <!-- Dynamically filled with proposals -->
         </div>
     </div>
@@ -35,7 +35,7 @@
                         proposalsList.innerHTML = ''; // Clear existing list
                         data.proposals.forEach(proposal => {
                             const proposalElement = document.createElement('div');
-                            proposalElement.className = 'proposal-item feedback-animation';
+                            proposalElement.className = 'proposal-item';
                             proposalElement.innerHTML = `
                             <h3>${proposal.title}</h3>
                             <p>Status: <strong>${proposal.status}</strong></p>

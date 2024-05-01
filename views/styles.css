@@ -99,70 +99,52 @@ html {
 
 .footer {
     font-size: 0.8em;
-    position: fixed;
-    bottom: 0;
-    padding: 1rem 0;
-    width: 100%;
-}
-
-.password-field {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.toggle-password {
-    cursor: pointer;
     position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    height: 20px;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem;
 }
 
 .dashboard-container {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin-top: 20px;
+    flex-direction: row;
+    /* Aligns items horizontally */
+    justify-content: space-evenly;
+    /* Evenly spaces the cards within the container */
+    width: 100%;
+    /* Full width to allow even spacing */
+    padding: 20px;
+    /* Adds some padding around the container */
 }
 
 .card {
-    background: var(--light-gray);
-    border: 1px solid var(--dark-gray);
-    border-radius: 10px;
+    background-color: var(--off-white);
+    border-left: 5px solid var(--maroon);
     padding: 20px;
-    text-align: center;
-    width: 180px;
-    transition: transform 0.3s ease;
-}
-
-.card a {
-    text-decoration: none;
-    color: var(--dark-gray);
-    font-weight: bold;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: -8px 0px 15px -10px var(--maroon);
+    /* Shadow effect for depth, cast leftwards */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth transition for hover effects */
+    width: calc(25% - 20px);
+    /* Calculation to allow for margins in a 4-card setup */
+    box-sizing: border-box;
+    /* Ensures padding and border are included in width */
 }
 
 .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Lifts the card on hover */
+    box-shadow: -8px 0px 15px -5px var(--maroon);
+    /* Enhances the shadow on hover */
 }
 
-:root {
-    --primary-color: maroon;
-    /* Maroon for primary actions and elements */
-    --accent-color: yellow;
-    /* Yellow for highlighting key areas and buttons */
-    --text-color: #fff;
-    /* White text for better readability on dark backgrounds */
-}
-
-/* Button enhancements for visual hierarchy */
 .button-primary {
     background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: var(--text-color);
     padding: 10px 20px;
     font-size: 16px;
@@ -178,60 +160,22 @@ html {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Generic card styling for proposals and information cards */
-.card {
-    background-color: var(--text-color);
-    border-left: 5px solid var(--primary-color);
-    padding: 20px;
-    margin: 10px;
-    border-radius: 8px;
-}
-
-/* Feedback and animation for interactive elements */
-.feedback-animation {
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.1);
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* Accessibility improvements */
-[role="button"],
-[role="link"],
-[role="alert"] {
-    outline: none;
-    /* Removing outline and replacing with custom styles for focused elements */
-    box-shadow: 0 0 0 3px rgba(255, 255, 0, 0.75);
-    /* Yellow glow for focus */
-}
-
-.instruction-text {
-    font-size: 12px;
-    color: #666;
-    display: block;
-    margin-top: 5px;
-    /* Position it below the input for minimal disruption */
-}
-
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .button-primary {
         padding: 8px 16px;
         font-size: 14px;
+    }
+
+    .dashboard-container {
+        flex-direction: column;
+        /* Stacks cards vertically on small screens */
+        align-items: center;
+        /* Centers cards vertically */
+    }
+
+    .card {
+        width: 90%;
+        /* Wider cards for better readability on small screens */
     }
 }
