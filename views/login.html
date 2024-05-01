@@ -21,12 +21,11 @@
                 <label for="password">Password:</label>
                 <div class="password-field">
                     <input type="password" id="password" name="password" required autocomplete="off" readonly
-                        onfocus="this.removeAttribute('readonly');">
-                    <img src="/icons/show_password.png" id="togglePassword" class="toggle-password"
-                        alt="Toggle Password Visibility" onclick="togglePasswordVisibility()">
+                        onfocus="this.removeAttribute('readonly');" ondblclick="togglePasswordVisibility();">
                 </div>
+                <small class="instruction-text">Double-click to toggle password visibility</small>
 
-                <button type="submit">Log In</button>
+                <button type="submit" class="button-primary">Log In</button>
             </form>
         </div>
     </div>
@@ -36,20 +35,11 @@
     </div>
 
     <script>
-        // Toggle password visibility
         function togglePasswordVisibility() {
             let passwordInput = document.getElementById('password');
-            let passwordIcon = document.getElementById('togglePassword');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.src = '/icons/hide_password.png';
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.src = '/icons/show_password.png';
-            }
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
         }
 
-        // Handle form submission
         document.querySelector('.login-form').addEventListener('submit', function (event) {
             event.preventDefault();
             const formData = {

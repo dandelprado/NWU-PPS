@@ -151,23 +151,87 @@ html {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+:root {
+    --primary-color: maroon;
+    /* Maroon for primary actions and elements */
+    --accent-color: yellow;
+    /* Yellow for highlighting key areas and buttons */
+    --text-color: #fff;
+    /* White text for better readability on dark backgrounds */
+}
 
+/* Button enhancements for visual hierarchy */
+.button-primary {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button-primary:hover,
+.button-primary:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Generic card styling for proposals and information cards */
+.card {
+    background-color: var(--text-color);
+    border-left: 5px solid var(--primary-color);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+}
+
+/* Feedback and animation for interactive elements */
+.feedback-animation {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Accessibility improvements */
+[role="button"],
+[role="link"],
+[role="alert"] {
+    outline: none;
+    /* Removing outline and replacing with custom styles for focused elements */
+    box-shadow: 0 0 0 3px rgba(255, 255, 0, 0.75);
+    /* Yellow glow for focus */
+}
+
+.instruction-text {
+    font-size: 12px;
+    color: #666;
+    display: block;
+    margin-top: 5px;
+    /* Position it below the input for minimal disruption */
+}
+
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .container {
-        margin: 1rem;
-    }
-
-    .login-card,
-    .password-rules,
-    .login-form input[type='text'],
-    .login-form input[type='password'],
-    .login-form button {
-        width: auto;
-        padding: 1rem;
-    }
-
-    .password-field input[type='password'] {
-        padding-right: 30px;
-        /* Match the non-media query value */
+    .button-primary {
+        padding: 8px 16px;
+        font-size: 14px;
     }
 }
