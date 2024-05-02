@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/login.html'));
 });
 
+
 app.get('/changePassword.html', (req, res) => {
     if (!req.session.user || req.session.user.passwordChanged) {
         return res.redirect('/');

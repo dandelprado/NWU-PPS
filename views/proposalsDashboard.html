@@ -4,60 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proposals Dashboard - NWU Project Proposal System</title>
+    <title>Proposal Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="header">
-        <h1>Proposals Dashboard</h1>
+        <h1>Proposal Dashboard</h1>
     </div>
     <div class="container">
-        <div id="proposalsList" class="proposals-list">
-            <!-- Dynamically filled with proposals -->
+        <div class="proposal-dashboard-container" id="proposalList">
+            <!-- Proposals will be dynamically inserted here by proposalsDashboard.js -->
         </div>
     </div>
     <div class="footer">
-        Developed by: Dan del Prado
+        <p>Developed by: Your Development Team</p>
     </div>
 
-    <script>
-        // Assume this function will be called after the page loads and on any updates
-        function loadProposals() {
-            fetch('/proposals/list', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const proposalsList = document.getElementById('proposalsList');
-                        proposalsList.innerHTML = ''; // Clear existing list
-                        data.proposals.forEach(proposal => {
-                            const proposalElement = document.createElement('div');
-                            proposalElement.className = 'proposal-item';
-                            proposalElement.innerHTML = `
-                            <h3>${proposal.title}</h3>
-                            <p>Status: <strong>${proposal.status}</strong></p>
-                            <p>Submitted By: ${proposal.submittedBy}</p>
-                            <p>Date Submitted: ${proposal.dateSubmitted}</p>
-                            ${proposal.comments ? `<p>Comments: ${proposal.comments}</p>` : ''}
-                        `;
-                            proposalsList.appendChild(proposalElement);
-                        });
-                    } else {
-                        alert('Error loading proposals: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred while loading proposals. Please try again later.");
-                });
-        }
-
-        // Call the loadProposals function when the page loads
-        window.onload = loadProposals;
-    </script>
+    <script src="scripts/proposalsDashboard.js"></script>
 </body>
 
 </html>

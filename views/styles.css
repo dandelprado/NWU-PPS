@@ -158,6 +158,130 @@ html {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.form-card {
+    background: var(--light-gray);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 360px;
+    margin: 2rem auto;
+    /* Centering the card */
+}
+
+.form-card label,
+.form-card input,
+.form-card button {
+    display: block;
+    width: 100%;
+}
+
+.form-card label {
+    margin-bottom: 0.5rem;
+    color: var(--dark-gray);
+    font-weight: bold;
+}
+
+.form-card input[type="text"],
+.form-card input[type="file"] {
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--dark-gray);
+    border-radius: 4px;
+}
+
+.form-card input[type="checkbox"] {
+    width: auto;
+    /* Do not stretch checkbox to full width */
+    margin-right: 10px;
+    /* Space between checkbox and label text */
+}
+
+.form-card button {
+    background-color: var(--yellow);
+    color: var(--maroon);
+    padding: 12px 20px;
+    margin-top: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.form-card button:hover {
+    background-color: var(--dark-gray);
+    color: white;
+}
+
+/* Additional styles for Proposal Dashboard specific to proposals */
+.proposal-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--off-white);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.proposal-item {
+    background-color: var(--light-gray);
+    border-left: 5px solid var(--maroon);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.proposal-item h3 {
+    color: var(--dark-gray);
+    margin: 0 0 10px 0;
+}
+
+.proposal-item p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: var(--dark-gray);
+}
+
+.proposal-item a {
+    color: var(--yellow);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.proposal-item button {
+    background-color: var(--yellow);
+    color: var(--maroon);
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.proposal-item button:hover {
+    background-color: var(--dark-gray);
+    color: white;
+}
+
+.comments-container {
+    background-color: var(--off-white);
+    padding: 10px;
+    border-left: 4px solid var(--yellow);
+    margin-top: 10px;
+    display: none;
+    /* Initially hidden */
+}
+
+.comments-container p {
+    font-size: 0.8em;
+    color: var(--dark-gray);
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .button-primary {

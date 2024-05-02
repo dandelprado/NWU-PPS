@@ -33,25 +33,9 @@
         Developed by: Dan del Prado
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('/auth/user-info', {
-                credentials: 'include' // Ensure credentials are included with the request
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('username').textContent = data.firstName || 'User';
-                    } else {
-                        console.error('Failed to retrieve user info:', data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('username').textContent = 'User';
-                });
-        });
-    </script>
+    <script src="/scripts/dashboard.js"></script>
+
+
 </body>
 
 </html>

@@ -1,10 +1,15 @@
+// session.js
 const session = require('express-session');
 
 module.exports = function (app) {
     app.use(session({
-        secret: process.env.SESSION_SECRET || 'your_secret_key', // Use environment variable for secrets
+        secret: process.env.SESSION_SECRET || 'your_secret_key',
         resave: false,
-        saveUninitialized: true, // Choose based on your need for compliance or behavior
-        cookie: { secure: process.env.NODE_ENV === 'production' } // Secure cookies in production
+        saveUninitialized: false,  // Changed to false to not create session until something is stored
+        cookie: {
+            secure: false,
+            httpOnly: true,  // Mitigate XSS by not allowing client-side script to access the cookie
+            sameSite: 'lax'  // Strict might prevent cookies being sent on initial request in some scenarios
+        }
     }));
 };

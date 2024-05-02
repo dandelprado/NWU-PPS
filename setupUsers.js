@@ -15,11 +15,11 @@ const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
 
 function createUsers() {
     const users = [
-        { username: "osa_admin", role: "OSA", password: "osa1234" },
-        { username: "finance_admin", role: "Finance", password: "finance1234" },
-        { username: "dean_cas", role: "Dean", password: "deancas1234" },
-        { username: "pres_casso", role: "President", password: "prescasso1234" },
-        //will add other users soon as I get the complete list
+        { username: "osa_admin", role: "OSA", password: "osa1234", organizationId: null },
+        { username: "finance_admin", role: "Finance", password: "finance1234", organizationId: null },
+        { username: "dean_cas", role: "Dean", password: "deancas1234", organizationId: null },
+        { username: "pres_casso", role: "President", password: "prescasso1234", organizationId: 1 },
+        // Add other users soon as you get the complete list, including their organization IDs if applicable
     ];
 
     users.forEach(user => {
@@ -33,15 +33,15 @@ function createUsers() {
                 console.log(`User ${user.username} already exists. Skipping.`);
             } else {
                 const hashedPassword = bcrypt.hashSync(user.password, 10);
-                db.run(`INSERT INTO Users (Username, Password, RoleID, PasswordChanged, InfoCompleted) VALUES (?, ?, (SELECT RoleID FROM Roles WHERE Title = ?), FALSE, FALSE)`, [user.username, hashedPassword, user.role], function (err) {
-                    if (err) {
-                        console.error('Insert error for user ' + user.username + ': ' + err.message);
-                        return;
-                    }
-                    console.log(`User ${user.username} added successfully.`);
-                });
+                db.run(`INSERT INTO Users (Username, Password, RoleID, OrganizationID, PasswordChanged, InfoCompleted) VALUES (?, ?, (SELECT RoleID FROM Roles WHERE Title = ?), ?, FALSE, FALSE)`,
+                    [user.username, hashedPassword, user.role, user.organizationId], function (err) {
+                        if (err) {
+                            console.error('Insert error for user ' + user.username + ': ' + err.message);
+                            return;
+                        }
+                        console.log(`User ${user.username} added successfully.`);
+                    });
             }
         });
     });
 }
-

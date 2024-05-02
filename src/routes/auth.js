@@ -8,9 +8,12 @@ function startSession(req, user, redirectUrl, res) {
     req.session.user = {
         id: user.UserID,
         username: user.Username,
+        firstName: user.FirstName,
+        lastName: user.LastName,
         role: user.RoleID,
         passwordChanged: user.PasswordChanged,
-        infoCompleted: user.InfoCompleted
+        infoCompleted: user.InfoCompleted,
+        organizationName: user.OrganizationName  // Storing organization name in session
     };
     req.session.save(err => {
         if (!err) {
@@ -24,14 +27,20 @@ function startSession(req, user, redirectUrl, res) {
 // Handle login
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
-    db.get('SELECT * FROM Users WHERE Username = ?', [username], (err, user) => {
+    const sql = `
+        SELECT Users.*, Organizations.Name AS OrganizationName 
+        FROM Users 
+        LEFT JOIN Organizations ON Users.OrganizationID = Organizations.OrganizationID 
+        WHERE Users.Username = ?
+    `;
+    db.get(sql, [username], (err, user) => {
+        console.log(user);
         if (err) {
             return res.status(500).json({ error: 'Internal server error' });
         }
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-
         if (bcrypt.compareSync(password, user.Password)) {
             let redirectUrl = '/dashboard.html';
             if (!user.PasswordChanged) {
@@ -70,8 +79,6 @@ router.post('/change-password', (req, res) => {
     });
 });
 
-
-
 router.post('/update-profile', (req, res) => {
     if (!req.session.user || !req.session.user.id) {
         return res.status(403).json({ error: 'Unauthorized request' });
@@ -84,7 +91,8 @@ router.post('/update-profile', (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to update profile' });
         }
-        req.session.user.infoCompleted = true;
+        req.session.user.firstName = firstName;  // Update session with new first name
+        req.session.user.lastName = lastName;  // Update session with new last name
         req.session.save(err => {
             if (!err) {
                 res.json({ success: true, message: 'Profile updated successfully', redirectUrl: '/dashboard.html' });
@@ -95,23 +103,32 @@ router.post('/update-profile', (req, res) => {
     });
 });
 
-// Endpoint to get user info
+
+// Endpoint to get user info, including the organization name
 router.get('/user-info', (req, res) => {
     if (req.session && req.session.user) {
-        db.get("SELECT FirstName FROM Users WHERE UserID = ?", [req.session.user.id], (err, row) => {
-            if (err) {
-                return res.status(500).json({ error: 'Internal server error' });
-            }
-            if (row) {
-                res.json({ success: true, firstName: row.FirstName });
-            } else {
-                res.status(404).json({ error: 'User not found' });
-            }
-        });
+        console.log('User Info:', req.session.user);
+        const userInfo = {
+            firstName: req.session.user.firstName,  // Correct this to make sure it's fetched and stored
+            lastName: req.session.user.lastName,
+            username: req.session.user.username,
+            role: req.session.user.role,
+            organizationName: req.session.user.organizationName
+        };
+        res.json({ success: true, data: userInfo });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
     }
 });
 
+// New endpoint to get organization info from session
+router.get('/organization-info', (req, res) => {
+    console.log(req.session);
+    if (req.session && req.session.user && req.session.user.organizationName) {
+        res.json({ success: true, organizationName: req.session.user.organizationName });
+    } else {
+        res.status(401).json({ error: 'Unauthorized or no organization data' });
+    }
+});
 
 module.exports = router;

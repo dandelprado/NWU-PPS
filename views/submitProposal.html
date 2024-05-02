@@ -4,68 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Proposal - NWU Project Proposal System</title>
+    <title>Submit Proposal</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="header">
-        <h1>Submit New Proposal</h1>
+        <h1>SUBMIT YOUR PROPOSAL</h1>
     </div>
     <div class="container">
         <div class="form-card">
-            <form class="proposal-form" id="submitProposalForm">
-                <label for="title">Proposal Title:</label>
-                <input type="text" id="title" name="title" required class="input-primary">
+            <form id="submitProposalForm">
+                <label for="projectTitle">Project Title:</label>
+                <input type="text" id="projectTitle" name="projectTitle" placeholder="Enter project title" required>
 
-                <label for="details">Details:</label>
-                <textarea id="details" name="details" required class="textarea-primary"></textarea>
+                <label for="organization">Organization:</label>
+                <input type="text" id="organization" name="organization" value="User's Organization" readonly>
 
-                <label for="fundingRequired">Funding Required:</label>
-                <input type="checkbox" id="fundingRequired" name="fundingRequired" class="checkbox-primary">
+                <label for="fileUpload">Upload Proposal Document:</label>
+                <input type="file" id="fileUpload" name="fileUpload" required>
 
-                <label for="facilityRequired">Facility Required:</label>
-                <input type="checkbox" id="facilityRequired" name="facilityRequired" class="checkbox-primary">
+                <label><input type="checkbox" id="fundingRequest" name="fundingRequest"> Funding Required</label>
+                <label><input type="checkbox" id="facilityRequest" name="facilityRequest"> Facility Required</label>
 
                 <button type="submit" class="button-primary">Submit Proposal</button>
             </form>
         </div>
     </div>
     <div class="footer">
-        Developed by: Dan del Prado
+        <p>Developed by: Dan S. del Prado</p>
     </div>
-
-    <script>
-        document.getElementById('submitProposalForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const title = document.getElementById('title').value;
-            const details = document.getElementById('details').value;
-            const fundingRequired = document.getElementById('fundingRequired').checked;
-            const facilityRequired = document.getElementById('facilityRequired').checked;
-
-            // Assuming the logged-in user's ID is available globally or retrieved from session
-            const submittedByUserId = LOGGED_IN_USER_ID;
-
-            fetch('/proposals/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, details, submittedByUserId, fundingRequired, facilityRequired }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Proposal submitted successfully.');
-                        // Redirect to dashboard or other page
-                    } else {
-                        alert('Error submitting proposal: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred. Please try again later.");
-                });
-        });
-    </script>
+    <script src="scripts/submitProposal.js"></script>
 </body>
 
 </html>
