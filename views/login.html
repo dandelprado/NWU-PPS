@@ -35,10 +35,39 @@
     </div>
 
     <script>
-        function togglePasswordVisibility() {
-            let passwordInput = document.getElementById('password');
-            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        // Helper function to determine if the device is mobile
+        function isMobileDevice() {
+            return ('ontouchstart' in document.documentElement && window.innerWidth <= 800);
         }
+
+        // Toggle password visibility
+        function togglePasswordVisibility(inputElement) {
+            inputElement.type = inputElement.type === 'password' ? 'text' : 'password';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById('password');
+            const instructionText = document.querySelector('.instruction-text');
+
+            if (isMobileDevice()) {
+                instructionText.textContent = "Long press to toggle password visibility"; // Update text for mobile
+                let touchTime = 0;
+                passwordInput.addEventListener('touchstart', function (event) {
+                    touchTime = new Date().getTime();
+                }, false);
+
+                passwordInput.addEventListener('touchend', function (event) {
+                    if (new Date().getTime() - touchTime > 500) { // Long press detected
+                        togglePasswordVisibility(passwordInput);
+                    }
+                }, false);
+            } else {
+                instructionText.textContent = "Double-click to toggle password visibility"; // Desktop text
+                passwordInput.addEventListener('dblclick', function () {
+                    togglePasswordVisibility(passwordInput);
+                }, false);
+            }
+        });
 
         document.querySelector('.login-form').addEventListener('submit', function (event) {
             event.preventDefault();
@@ -66,6 +95,7 @@
                 });
         });
     </script>
+
 </body>
 
 </html>
