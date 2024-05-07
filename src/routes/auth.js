@@ -54,30 +54,38 @@ router.post('/login', (req, res) => {
         }
     });
 });
-
 router.post('/change-password', (req, res) => {
     if (!req.session.user || !req.session.user.id) {
         return res.status(403).json({ error: 'Unauthorized request' });
     }
 
     const { newPassword } = req.body;
-    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    const hashedPassword = bcrypt.hashSync(newPassword, 10); // Ensure password is hashed
     const userId = req.session.user.id;
 
-    db.run('UPDATE Users SET Password = ?, PasswordChanged = 1 WHERE UserID = ?', [hashedPassword, userId], (err) => {
+    // Update the password in the database
+    db.run('UPDATE Users SET Password = ?, PasswordChanged = 1 WHERE UserID = ?', [hashedPassword, userId], function (err) {
         if (err) {
-            return res.status(500).json({ error: 'Internal server error' });
+            console.error('Failed to update password:', err);
+            return res.status(500).json({ error: 'Failed to update password' });
         }
+        if (this.changes === 0) {
+            console.log('No user found or no update made');
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update session to reflect the password change
         req.session.user.passwordChanged = true;
         req.session.save(err => {
             if (err) {
-                res.status(500).json({ error: 'Failed to save session' });
-            } else {
-                res.json({ success: true, message: 'Password updated successfully', redirectUrl: '/updateInfo.html' });
+                console.error('Session save error:', err);
+                return res.status(500).json({ error: 'Session update failed' });
             }
+            res.json({ success: true, message: 'Password updated successfully', redirectUrl: '/updateInfo.html' });
         });
     });
 });
+
 
 router.post('/update-profile', (req, res) => {
     if (!req.session.user || !req.session.user.id) {
