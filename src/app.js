@@ -3,10 +3,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const authRoutes = require('./routes/auth');
 const proposalRoutes = require('./routes/proposals');
-const sessionConfig = require('./middlewares/session'); // Import session configuration
+const sessionConfig = require('./middlewares/session');
 const app = express();
 
-// Apply session configuration
 sessionConfig(app);
 app.use('/proposals', proposalRoutes);
 app.use(express.static(path.join(__dirname, '../views')));

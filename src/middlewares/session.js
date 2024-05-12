@@ -8,8 +8,8 @@ module.exports = function (app) {
         saveUninitialized: false,  // Changed to false to not create session until something is stored
         cookie: {
             secure: false,
-            httpOnly: true,  // Mitigate XSS by not allowing client-side script to access the cookie
-            sameSite: 'lax'  // Strict might prevent cookies being sent on initial request in some scenarios
+            httpOnly: true,
+            sameSite: 'lax'
         }
     }));
 };

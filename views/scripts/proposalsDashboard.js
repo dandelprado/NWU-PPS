@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchProposals();
 
     function fetchProposals() {
-        fetch('/api/proposals') // Adjust the URL based on your actual API endpoint
+        fetch('/api/proposals')
             .then(response => response.json())
             .then(data => displayProposals(data.proposals))
             .catch(error => console.error('Error fetching proposals:', error));
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.openComments = function (proposalId) {
         const commentsDiv = document.getElementById('comments-' + proposalId);
         if (commentsDiv.style.display === 'none') {
-            fetch(`/api/proposals/${proposalId}/comments`) // Adjust the URL based on your actual API endpoint
+            fetch(`/api/proposals/${proposalId}/comments`)
                 .then(response => response.json())
                 .then(data => {
                     const commentsHtml = data.comments.map(comment => `<p>${comment}</p>`).join('');

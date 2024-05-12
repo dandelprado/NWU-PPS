@@ -117,7 +117,7 @@ router.get('/user-info', (req, res) => {
     if (req.session && req.session.user) {
         console.log('User Info:', req.session.user);
         const userInfo = {
-            firstName: req.session.user.firstName,  // Correct this to make sure it's fetched and stored
+            firstName: req.session.user.firstName,
             lastName: req.session.user.lastName,
             username: req.session.user.username,
             role: req.session.user.role,
@@ -129,7 +129,6 @@ router.get('/user-info', (req, res) => {
     }
 });
 
-// New endpoint to get organization info from session
 router.get('/organization-info', (req, res) => {
     console.log(req.session);
     if (req.session && req.session.user && req.session.user.organizationName) {
