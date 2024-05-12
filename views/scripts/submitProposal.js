@@ -38,7 +38,8 @@ function addFormSubmissionHandler() {
             .then(data => {
                 if (data.success) {
                     alert('Proposal submitted successfully!');
-                    form.reset();
+                    document.getElementById('projectTitle').value = '';  // Clear the title input
+                    document.getElementById('fileUpload').value = '';
                 } else {
                     alert('Error submitting proposal: ' + data.error);
                 }
