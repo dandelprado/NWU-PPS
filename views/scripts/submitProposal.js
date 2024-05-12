@@ -1,12 +1,13 @@
-// submitProposal.js
+// Event listener for DOM content loaded
 document.addEventListener('DOMContentLoaded', function () {
     fetchOrganizationInfo();
     addFormSubmissionHandler();
 });
 
+// Fetch organization info from the server and populate the form
 function fetchOrganizationInfo() {
     fetch('/auth/organization-info', {
-        credentials: 'include'
+        credentials: 'include'  // Ensures cookies, such as session cookies, are sent with the request
     })
         .then(response => response.json())
         .then(data => {
@@ -21,24 +22,22 @@ function fetchOrganizationInfo() {
         });
 }
 
-
+// Handle form submission
 function addFormSubmissionHandler() {
     const form = document.getElementById('submitProposalForm');
     form.addEventListener('submit', function (event) {
-        event.preventDefault();  // Prevent the default form submission behavior
+        event.preventDefault();  // Prevent default form submission behavior
 
-        const formData = new FormData(form);
-        // Optionally, append additional data or modify formData before sending
+        const formData = new FormData(form);  // Create a new FormData object, capturing all form inputs
 
-        fetch('/proposals/submit', {  // Endpoint to submit the proposal
+        fetch('/proposals/submit', {  // Make a POST request to the server-side endpoint
             method: 'POST',
-            body: formData
+            body: formData,  // Attach the form data to the request. Do not set 'Content-Type' header; let the browser handle it
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     alert('Proposal submitted successfully!');
-                    // Optionally, redirect the user or clear the form
                     form.reset();  // Clear the form after successful submission
                 } else {
                     alert('Error submitting proposal: ' + data.error);
