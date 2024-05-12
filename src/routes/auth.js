@@ -129,6 +129,19 @@ router.get('/user-info', (req, res) => {
     }
 });
 
+router.get('/session-status', (req, res) => {
+    if (req.session && req.session.user) {
+        res.json({
+            isLoggedIn: true,
+            passwordChanged: req.session.user.passwordChanged,
+            infoCompleted: req.session.user.infoCompleted
+        });
+    } else {
+        res.json({ isLoggedIn: false });
+    }
+});
+
+
 router.get('/organization-info', (req, res) => {
     console.log(req.session);
     if (req.session && req.session.user && req.session.user.organizationName) {
