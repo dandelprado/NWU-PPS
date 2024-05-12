@@ -39,11 +39,11 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.isLoggedIn && data.passwordChanged && data.infoCompleted) {
-                        const buttonContainer = document.querySelector('.login-card'); // Assuming '.login-card' is the container for your form elements and buttons
+                        const buttonContainer = document.querySelector('.login-card');
                         const backButton = document.createElement('button');
                         backButton.textContent = 'Back to Dashboard';
-                        backButton.className = 'button-primary'; // Assuming 'button-primary' is the class for your buttons
-                        backButton.style.marginTop = '10px'; // Additional styling if necessary
+                        backButton.className = 'button-primary';
+                        backButton.style.marginTop = '10px';
 
                         const formElement = document.querySelector('form'); // Find the form to append the button after
                         formElement.appendChild(backButton); // Append the button directly after the form inside the container
