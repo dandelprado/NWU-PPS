@@ -14,14 +14,15 @@ function isLoggedIn(req, res, next) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const orgPath = path.join(__dirname, '../uploads', req.session.user.organizationName);
-        const userPath = path.join(orgPath, req.session.user.username);
-        fs.mkdirSync(orgPath, { recursive: true });
+        const basePath = path.join(__dirname, '../proposal_uploads', req.session.user.organizationName);
+        const userPath = path.join(basePath, req.session.user.lastName + '_' + req.session.user.firstName);
+        fs.mkdirSync(basePath, { recursive: true });
         fs.mkdirSync(userPath, { recursive: true });
         cb(null, userPath);
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        const newFilename = req.body.title.replace(/\s+/g, '_') + path.extname(file.originalname);
+        cb(null, newFilename);
     }
 });
 

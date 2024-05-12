@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Fetch organization info from the server and populate the form
 function fetchOrganizationInfo() {
     fetch('/auth/organization-info', {
-        credentials: 'include'  // Ensures cookies, such as session cookies, are sent with the request
+        credentials: 'include'
     })
         .then(response => response.json())
         .then(data => {
@@ -26,19 +26,19 @@ function fetchOrganizationInfo() {
 function addFormSubmissionHandler() {
     const form = document.getElementById('submitProposalForm');
     form.addEventListener('submit', function (event) {
-        event.preventDefault();  // Prevent default form submission behavior
+        event.preventDefault();
 
-        const formData = new FormData(form);  // Create a new FormData object, capturing all form inputs
+        const formData = new FormData(form);
 
-        fetch('/proposals/submit', {  // Make a POST request to the server-side endpoint
+        fetch('/proposals/submit', {
             method: 'POST',
-            body: formData,  // Attach the form data to the request. Do not set 'Content-Type' header; let the browser handle it
+            body: formData,
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     alert('Proposal submitted successfully!');
-                    form.reset();  // Clear the form after successful submission
+                    form.reset();
                 } else {
                     alert('Error submitting proposal: ' + data.error);
                 }
