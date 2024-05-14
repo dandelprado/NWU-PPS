@@ -60,7 +60,7 @@ router.post('/change-password', (req, res) => {
     }
 
     const { newPassword } = req.body;
-    const hashedPassword = bcrypt.hashSync(newPassword, 10); // Ensure password is hashed
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
     const userId = req.session.user.id;
 
     // Update the password in the database
