@@ -28,8 +28,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Function to determine the next approver based on organization type
+async function determineNextApprover(organizationId) {
+    try {
+        const org = await db.get(`SELECT CollegeID, DepartmentID FROM Organizations WHERE OrganizationID = ?`, [organizationId]);
+        if (org.DepartmentID) {
+            return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Head') AND DepartmentID = ?`, [org.DepartmentID]);
+        } else if (org.CollegeID) {
+            return await db.get(`SELECT DeanUserID FROM Colleges WHERE CollegeID = ?`, [org.CollegeID]);
+        } else {
+            return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'OSA')`);
+        }
+    } catch (error) {
+        console.error('Error determining next approver:', error);
+        throw error;
+    }
+}
+
+
 // Submit a new proposal with file
-router.post('/submit', isLoggedIn, upload.single('fileUpload'), (req, res) => {
+router.post('/submit', isLoggedIn, upload.single('fileUpload'), async (req, res) => {
     console.log(req.body);
     const { title, fundingRequest, facilityRequest, details } = req.body;
     if (!title) {
@@ -41,19 +59,19 @@ router.post('/submit', isLoggedIn, upload.single('fileUpload'), (req, res) => {
     const currentDate = new Date().toISOString();
     const documentPath = req.file ? req.file.path : '';
 
-    const sql = `
-        INSERT INTO Proposals (Title, SubmittedByUserID, Status, SubmissionDate, LastUpdatedDate, DocumentPath, FundingRequired, FacilityRequired)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+    try {
+        const nextApprover = await determineNextApprover(req.session.user.organizationId);
 
-    db.run(sql, [title, submittedByUserId, status, currentDate, currentDate, documentPath, fundingRequest ? 1 : 0, facilityRequest ? 1 : 0], function (err) {
-        if (err) {
-            res.status(500).json({ error: 'Error submitting proposal: ' + err.message });
-            return;
-        }
-        res.json({ success: true, message: 'Proposal submitted successfully', proposalId: this.lastID });
-    });
+        const sql = `
+            INSERT INTO Proposals (Title, SubmittedByUserID, Status, SubmissionDate, LastUpdatedDate, DocumentPath, FundingRequired, FacilityRequired, NextApproverUserID)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        await db.run(sql, [title, submittedByUserId, status, currentDate, currentDate, documentPath, fundingRequest ? 1 : 0, facilityRequest ? 1 : 0, nextApprover.UserID]);
+
+        res.json({ success: true, message: 'Proposal submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error submitting proposal: ' + error.message });
+    }
 });
-
 
 module.exports = router;
