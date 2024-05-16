@@ -277,6 +277,39 @@ html {
     color: var(--dark-gray);
 }
 
+/* Approver Dashboard Styles */
+.approver-header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+}
+
+.approver-container {
+    padding: 2em;
+}
+
+.approver-proposal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.approver-proposal-item {
+    border: 1px solid #ccc;
+    padding: 1em;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.approver-proposal-item h3 {
+    margin-top: 0;
+}
+
+.approver-proposal-item button {
+    margin-right: 1em;
+}
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

@@ -151,4 +151,30 @@ router.get('/organization-info', (req, res) => {
     }
 });
 
+router.get('/api/proposals', async (req, res) => {
+    try {
+        const { userID } = req.session.user; // assuming session-based authentication
+        const proposals = await db.all(`SELECT * FROM Proposals WHERE SubmittedByUserID = ?`, [userID]);
+        res.json({ success: true, proposals });
+    } catch (error) {
+        console.error('Failed to fetch proposals:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch proposals' });
+    }
+});
+
+
+router.get('/api/proposals/myApprovals', (req, res) => {
+    const userId = req.session.user.id;
+    const sql = `SELECT * FROM Proposals WHERE NextApproverUserID = ?`;
+    db.all(sql, [userId], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            res.status(500).json({ success: false, error: 'Database error: ' + err.message });
+            return;
+        }
+        res.json({ success: true, proposals: rows });
+    });
+});
+
+
 module.exports = router;

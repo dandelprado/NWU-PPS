@@ -53,7 +53,6 @@ function createUsers() {
     ];
 
     users.forEach(user => {
-        // First, let's fetch the RoleID
         db.get('SELECT RoleID FROM Roles WHERE Title = ?', [user.role], (err, roleRow) => {
             if (err) {
                 console.error('Error fetching role for ' + user.username + ': ' + err.message);

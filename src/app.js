@@ -7,18 +7,21 @@ const sessionConfig = require('./middlewares/session');
 const app = express();
 
 sessionConfig(app);
+
 app.use('/proposals', proposalRoutes);
 app.use(express.static(path.join(__dirname, '../views')));
 
 app.use(bodyParser.json());
-app.use('/auth', authRoutes);
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/icons', express.static(path.join(__dirname, '../icons')));
+app.use('/auth', authRoutes);
+app.use('/proposals', proposalRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/login.html'));
 });
 
+app.use(express.static(path.join(__dirname, '../views')));
 
 app.get('/changePassword.html', (req, res) => {
     if (!req.session.user || req.session.user.passwordChanged) {

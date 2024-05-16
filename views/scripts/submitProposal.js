@@ -1,10 +1,8 @@
-// Event listener for DOM content loaded
 document.addEventListener('DOMContentLoaded', function () {
     fetchOrganizationInfo();
     addFormSubmissionHandler();
 });
 
-// Fetch organization info from the server and populate the form
 function fetchOrganizationInfo() {
     fetch('/auth/organization-info', {
         credentials: 'include'
@@ -38,8 +36,7 @@ function addFormSubmissionHandler() {
             .then(data => {
                 if (data.success) {
                     alert('Proposal submitted successfully!');
-                    document.getElementById('projectTitle').value = '';  // Clear the title input
-                    document.getElementById('fileUpload').value = '';
+                    window.location.href = 'dashboard.html'; // Redirect to dashboard 
                 } else {
                     alert('Error submitting proposal: ' + data.error);
                 }
