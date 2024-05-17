@@ -146,6 +146,20 @@ router.post('/approve/:id', isLoggedIn, async (req, res) => {
     }
 });
 
+// Correct these paths to align with your app.js route definitions
+router.get('/myApprovals', isLoggedIn, (req, res) => {
+    const userId = req.session.user.id;
+    const sql = `SELECT * FROM Proposals WHERE NextApproverUserID = ?`;
+    db.all(sql, [userId], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err);
+            res.status(500).json({ success: false, error: 'Database error: ' + err.message });
+            return;
+        }
+        res.json({ success: true, proposals: rows });
+    });
+});
+
 router.get('/api/proposals', isLoggedIn, async (req, res) => {
     try {
         const userID = req.session.user.id;
@@ -161,19 +175,6 @@ router.get('/api/proposals', isLoggedIn, async (req, res) => {
         console.error('Failed to fetch proposals:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch proposals' });
     }
-});
-
-router.get('/api/proposals/myApprovals', isLoggedIn, (req, res) => {
-    const userId = req.session.user.id;
-    const sql = `SELECT * FROM Proposals WHERE NextApproverUserID = ?`;
-    db.all(sql, [userId], (err, rows) => {
-        if (err) {
-            console.error('Database error:', err);
-            res.status(500).json({ success: false, error: 'Database error: ' + err.message });
-            return;
-        }
-        res.json({ success: true, proposals: rows });
-    });
 });
 
 module.exports = router;

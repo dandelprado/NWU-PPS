@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchProposals();
 
     function fetchProposals() {
-        fetch('/api/proposals/myApprovals', { credentials: 'include' })
+        fetch('/proposals/myApprovals', { credentials: 'include' }) // Ensure the correct path
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         const div = document.createElement('div');
                         div.className = 'proposal-item';
                         div.innerHTML = `
-                            <h3>${proposal.title}</h3>
-                            <p>Submitted by: ${proposal.submittedBy}</p>
-                            <p>Status: ${proposal.status}</p>
-                            <button onclick="approveProposal(${proposal.id})">Approve</button>
-                            <button onclick="rejectProposal(${proposal.id})">Reject</button>
+                            <h3>${proposal.Title}</h3>
+                            <p>Submitted by: ${proposal.SubmittedByUserID}</p>
+                            <p>Status: ${proposal.Status}</p>
+                            <button onclick="approveProposal(${proposal.ProposalID})">Approve</button>
+                            <button onclick="rejectProposal(${proposal.ProposalID})">Reject</button>
                         `;
                         list.appendChild(div);
                     });
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.approveProposal = function (proposalId) {
-        fetch(`/api/proposals/approve/${proposalId}`, {
+        fetch(`/proposals/approve/${proposalId}`, {
             method: 'POST',
             credentials: 'include',
         })
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     window.rejectProposal = function (proposalId) {
-        fetch(`/api/proposals/reject/${proposalId}`, {
+        fetch(`/proposals/reject/${proposalId}`, {
             method: 'POST',
             credentials: 'include',
         })
