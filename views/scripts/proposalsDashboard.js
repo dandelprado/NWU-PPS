@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchProposals();
 
     function fetchProposals() {
-        fetch('/proposals/api/proposals', { credentials: 'include' }) // Adjusted path
+        fetch('/proposals/api/proposals', { credentials: 'include' })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Network response was not ok: ${response.statusText}`);
                 }
-                return response.json(); // Parse the JSON response
+                return response.json();
             })
             .then(data => {
                 if (data.success) {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayProposals(proposals) {
         const list = document.getElementById('proposalList');
-        list.innerHTML = ''; // Clear existing proposals
+        list.innerHTML = '';
         proposals.forEach(proposal => {
             const div = document.createElement('div');
             div.className = 'proposal-item';

@@ -13,7 +13,7 @@ function startSession(req, user, redirectUrl, res) {
         role: user.RoleID,
         passwordChanged: user.PasswordChanged,
         infoCompleted: user.InfoCompleted,
-        organizationName: user.OrganizationName  // Storing organization name in session
+        organizationName: user.OrganizationName
     };
     req.session.save(err => {
         if (!err) {
@@ -24,7 +24,6 @@ function startSession(req, user, redirectUrl, res) {
     });
 }
 
-// Handle login
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
     const sql = `
@@ -34,7 +33,6 @@ router.post('/login', (req, res) => {
         WHERE Users.Username = ?
     `;
     db.get(sql, [username], (err, user) => {
-        console.log(user);
         if (err) {
             return res.status(500).json({ error: 'Internal server error' });
         }
@@ -42,11 +40,11 @@ router.post('/login', (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         if (bcrypt.compareSync(password, user.Password)) {
-            let redirectUrl = '/dashboard.html';
-            if (!user.PasswordChanged) {
-                redirectUrl = '/changePassword.html';
-            } else if (!user.InfoCompleted) {
+            let redirectUrl = '/changePassword.html';
+            if (user.PasswordChanged && !user.InfoCompleted) {
                 redirectUrl = '/updateInfo.html';
+            } else if (user.PasswordChanged && user.InfoCompleted) {
+                redirectUrl = '/dashboard.html';
             }
             startSession(req, user, redirectUrl, res);
         } else {
@@ -54,6 +52,7 @@ router.post('/login', (req, res) => {
         }
     });
 });
+
 router.post('/change-password', (req, res) => {
     if (!req.session.user || !req.session.user.id) {
         return res.status(403).json({ error: 'Unauthorized request' });
@@ -63,29 +62,19 @@ router.post('/change-password', (req, res) => {
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
     const userId = req.session.user.id;
 
-    // Update the password in the database
     db.run('UPDATE Users SET Password = ?, PasswordChanged = 1 WHERE UserID = ?', [hashedPassword, userId], function (err) {
         if (err) {
             console.error('Failed to update password:', err);
             return res.status(500).json({ error: 'Failed to update password' });
         }
         if (this.changes === 0) {
-            console.log('No user found or no update made');
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Update session to reflect the password change
         req.session.user.passwordChanged = true;
-        req.session.save(err => {
-            if (err) {
-                console.error('Session save error:', err);
-                return res.status(500).json({ error: 'Session update failed' });
-            }
-            res.json({ success: true, message: 'Password updated successfully', redirectUrl: '/updateInfo.html' });
-        });
+        res.json({ success: true, message: 'Password updated successfully', redirectUrl: '/updateInfo.html' });
     });
 });
-
 
 router.post('/update-profile', (req, res) => {
     if (!req.session.user || !req.session.user.id) {
@@ -99,23 +88,20 @@ router.post('/update-profile', (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to update profile' });
         }
-        req.session.user.firstName = firstName;  // Update session with new first name
-        req.session.user.lastName = lastName;  // Update session with new last name
-        req.session.save(err => {
-            if (!err) {
-                res.json({ success: true, message: 'Profile updated successfully', redirectUrl: '/dashboard.html' });
-            } else {
-                res.status(500).json({ error: 'Failed to save session' });
+
+        req.session.user.infoCompleted = true;
+        req.session.destroy(err => {
+            if (err) {
+                console.error('Failed to destroy session:', err);
+                return res.status(500).json({ error: 'Failed to reset session' });
             }
+            res.json({ success: true, message: 'Profile updated successfully', redirectUrl: '/login.html' });
         });
     });
 });
 
-
-// Endpoint to get user info, including the organization name
 router.get('/user-info', (req, res) => {
     if (req.session && req.session.user) {
-        console.log('User Info:', req.session.user);
         const userInfo = {
             firstName: req.session.user.firstName,
             lastName: req.session.user.lastName,
@@ -141,9 +127,7 @@ router.get('/session-status', (req, res) => {
     }
 });
 
-
 router.get('/organization-info', (req, res) => {
-    console.log(req.session);
     if (req.session && req.session.user && req.session.user.organizationName) {
         res.json({ success: true, organizationName: req.session.user.organizationName });
     } else {
@@ -153,15 +137,18 @@ router.get('/organization-info', (req, res) => {
 
 router.get('/api/proposals', async (req, res) => {
     try {
-        const { userID } = req.session.user; // assuming session-based authentication
-        const proposals = await db.all(`SELECT * FROM Proposals WHERE SubmittedByUserID = ?`, [userID]);
-        res.json({ success: true, proposals });
+        const { id: userID } = req.session.user;
+        db.all(`SELECT * FROM Proposals WHERE SubmittedByUserID = ?`, [userID], (err, rows) => {
+            if (err) {
+                throw err;
+            }
+            res.json({ success: true, proposals: rows });
+        });
     } catch (error) {
         console.error('Failed to fetch proposals:', error);
         res.status(500).json({ success: false, error: 'Failed to fetch proposals' });
     }
 });
-
 
 router.get('/api/proposals/myApprovals', (req, res) => {
     const userId = req.session.user.id;
@@ -175,6 +162,5 @@ router.get('/api/proposals/myApprovals', (req, res) => {
         res.json({ success: true, proposals: rows });
     });
 });
-
 
 module.exports = router;

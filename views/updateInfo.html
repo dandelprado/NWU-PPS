@@ -32,62 +32,8 @@
         Developed by: Dan del Prado
     </div>
 
-    <script>
+    <script src="/scripts/updateInfo.js"></script>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('/auth/session-status')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.isLoggedIn && data.passwordChanged && data.infoCompleted) {
-                        const buttonContainer = document.querySelector('.login-card');
-                        const backButton = document.createElement('button');
-                        backButton.textContent = 'Back to Dashboard';
-                        backButton.className = 'button-primary';
-                        backButton.style.marginTop = '10px';
-
-                        const formElement = document.querySelector('form'); // Find the form to append the button after
-                        formElement.appendChild(backButton); // Append the button directly after the form inside the container
-
-                        backButton.onclick = function () { window.location.href = 'dashboard.html'; };
-                    }
-                })
-                .catch(error => console.error('Error fetching session status:', error));
-        });
-
-
-
-        document.getElementById('updateInfoForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = {
-                userId: document.querySelector('input[name="userId"]').value,
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value
-            };
-
-            fetch('/auth/update-profile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Profile updated successfully.');
-                        // Redirect to the home page or dashboard
-                        window.location.href = '/';
-                    } else {
-                        // Handle errors or unsuccessful update
-                        alert(data.message || "An error occurred while updating your profile. Please try again.");
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert("An error occurred. Please try again later.");
-                });
-        });
-    </script>
 
 </body>
 

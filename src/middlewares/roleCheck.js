@@ -1,4 +1,3 @@
-// Role ID mappings (assuming these are the IDs from your database)
 const ROLE_IDS = {
     'President': 7,
     'Editor-in-Chief': 5,

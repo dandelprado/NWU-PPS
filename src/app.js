@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth');
 const proposalRoutes = require('./routes/proposals');
 const sessionConfig = require('./middlewares/session');
 const { checkRole, checkNotRole } = require('./middlewares/roleCheck');
+const { checkPasswordChange, checkProfileCompletion, enforceInitialSetup } = require('./middlewares/checkCompletion');
 const app = express();
 
 sessionConfig(app);
@@ -17,43 +18,34 @@ app.use('/proposals', proposalRoutes);
 
 app.use(express.static(path.join(__dirname, '../views')));
 
-app.get('/', (req, res) => {
-    console.log('Root route accessed');
+app.use('/changePassword.html', checkPasswordChange);
+app.use('/updateInfo.html', checkProfileCompletion);
+
+app.get('/', enforceInitialSetup, (req, res) => {
     if (!req.session.user) {
-        console.log('No session user, redirecting to login');
-        return res.sendFile(path.join(__dirname, '../views/login.html'));
+        return res.redirect('/login.html');
     }
     const role = req.session.user.role;
-    console.log('User role:', role);
     if (role === 7 || role === 5) {
-        console.log('Redirecting to dashboard');
         return res.sendFile(path.join(__dirname, '../views/dashboard.html'));
     } else {
-        console.log('Redirecting to approver dashboard');
         return res.sendFile(path.join(__dirname, '../views/approverDashboard.html'));
     }
 });
 
-// Ensure role-based access control
-app.get('/dashboard.html', checkNotRole('Approver'), (req, res) => {
+app.get('/dashboard.html', enforceInitialSetup, checkNotRole('Approver'), (req, res) => {
     res.sendFile(path.join(__dirname, '../views/dashboard.html'));
 });
 
-app.get('/approverDashboard.html', checkRole('Approver'), (req, res) => {
+app.get('/approverDashboard.html', enforceInitialSetup, checkRole('Approver'), (req, res) => {
     res.sendFile(path.join(__dirname, '../views/approverDashboard.html'));
 });
 
 app.get('/changePassword.html', (req, res) => {
-    if (!req.session.user || req.session.user.passwordChanged) {
-        return res.redirect('/');
-    }
     res.sendFile(path.join(__dirname, '../views/changePassword.html'));
 });
 
 app.get('/updateInfo.html', (req, res) => {
-    if (!req.session.user || !req.session.user.passwordChanged || req.session.user.infoCompleted) {
-        return res.redirect('/');
-    }
     res.sendFile(path.join(__dirname, '../views/updateInfo.html'));
 });
 
