@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 const db = require('../db/database');
 const router = express.Router();
 
-// Function to initialize session after login
 function startSession(req, user, redirectUrl, res) {
     req.session.user = {
         id: user.UserID,

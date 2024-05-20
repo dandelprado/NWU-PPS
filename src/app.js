@@ -7,7 +7,7 @@ const proposalRoutes = require('./routes/proposals');
 const sessionConfig = require('./middlewares/session');
 const { checkRole, checkNotRole } = require('./middlewares/roleCheck');
 const { checkPasswordChange, checkProfileCompletion, enforceInitialSetup } = require('./middlewares/checkCompletion');
-const authCheck = require('./middlewares/authCheck'); // Import the new middleware
+const authCheck = require('./middlewares/authCheck');
 const app = express();
 
 sessionConfig(app);

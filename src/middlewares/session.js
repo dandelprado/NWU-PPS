@@ -1,4 +1,3 @@
-// src/middlewares/session.js
 const session = require('express-session');
 
 module.exports = function (app) {
@@ -7,7 +6,7 @@ module.exports = function (app) {
         resave: false,
         saveUninitialized: false,
         cookie: {
-            secure: false, // Set to true if using https
+            secure: false,
             httpOnly: true,
             sameSite: 'lax'
         }

@@ -146,7 +146,6 @@ router.post('/approve/:id', isLoggedIn, async (req, res) => {
     }
 });
 
-// Correct these paths to align with your app.js route definitions
 router.get('/myApprovals', isLoggedIn, (req, res) => {
     const userId = req.session.user.id;
     const sql = `SELECT * FROM Proposals WHERE NextApproverUserID = ?`;

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchProposals();
 
     function fetchProposals() {
-        fetch('/proposals/myApprovals', { credentials: 'include' }) // Ensure the correct path
+        fetch('/proposals/myApprovals', { credentials: 'include' })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
