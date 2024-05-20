@@ -1,3 +1,4 @@
+// src/routes/auth.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../db/database');
@@ -23,7 +24,6 @@ function startSession(req, user, redirectUrl, res) {
         }
     });
 }
-
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
     const sql = `

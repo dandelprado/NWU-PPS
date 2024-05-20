@@ -1,3 +1,4 @@
+// src/app.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -6,6 +7,7 @@ const proposalRoutes = require('./routes/proposals');
 const sessionConfig = require('./middlewares/session');
 const { checkRole, checkNotRole } = require('./middlewares/roleCheck');
 const { checkPasswordChange, checkProfileCompletion, enforceInitialSetup } = require('./middlewares/checkCompletion');
+const authCheck = require('./middlewares/authCheck'); // Import the new middleware
 const app = express();
 
 sessionConfig(app);
@@ -14,8 +16,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/auth', authRoutes);
-app.use('/proposals', proposalRoutes);
 
+// Apply the authentication middleware to all routes except for login and styles.css
+app.use(authCheck);
+
+app.use('/proposals', proposalRoutes);
 app.use(express.static(path.join(__dirname, '../views')));
 
 app.use('/changePassword.html', checkPasswordChange);
