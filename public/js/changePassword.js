@@ -46,11 +46,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => console.error('Error fetching session status:', error));
-});
 
-document.addEventListener('DOMContentLoaded', function () {
     setupPasswordInput(document.getElementById('newPassword'), 'newPasswordInstruction');
     setupPasswordInput(document.getElementById('confirmPassword'), 'confirmPasswordInstruction');
+
     document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const newPassword = document.getElementById('newPassword').value;

@@ -6,7 +6,7 @@ const authRoutes = require('./routes/auth');
 const proposalRoutes = require('./routes/proposals');
 const sessionConfig = require('./middlewares/session');
 const { checkRole, checkNotRole } = require('./middlewares/roleCheck');
-const { checkPasswordChange, checkProfileCompletion, enforceInitialSetup } = require('./middlewares/checkCompletion');
+const { enforceInitialSetupStep } = require('./middlewares/checkCompletion');
 const authCheck = require('./middlewares/authCheck');
 const app = express();
 
@@ -15,18 +15,50 @@ sessionConfig(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Public routes
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/login.html'));
+});
+
 app.use('/auth', authRoutes);
 
 // Apply the authentication middleware to all routes except for login and styles.css
 app.use(authCheck);
 
+// Apply the initial setup step enforcement middleware
+app.use(enforceInitialSetupStep);
+
+// Protected routes
+app.get('/changePassword.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/changePassword.html'));
+});
+
+app.get('/updateInfo.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/updateInfo.html'));
+});
+
+app.get('/dashboard.html', checkNotRole('Approver'), (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/dashboard.html'));
+});
+
+app.get('/approverDashboard.html', checkRole('Approver'), (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/approverDashboard.html'));
+});
+
+app.get('/proposalsDashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/proposalsDashboard.html'));
+});
+
+app.get('/submitProposal.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/submitProposal.html'));
+});
+
 app.use('/proposals', proposalRoutes);
-app.use(express.static(path.join(__dirname, '../views')));
 
-app.use('/changePassword.html', checkPasswordChange);
-app.use('/updateInfo.html', checkProfileCompletion);
-
-app.get('/', enforceInitialSetup, (req, res) => {
+app.get('/', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login.html');
     }
@@ -36,22 +68,6 @@ app.get('/', enforceInitialSetup, (req, res) => {
     } else {
         return res.sendFile(path.join(__dirname, '../views/approverDashboard.html'));
     }
-});
-
-app.get('/dashboard.html', enforceInitialSetup, checkNotRole('Approver'), (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/dashboard.html'));
-});
-
-app.get('/approverDashboard.html', enforceInitialSetup, checkRole('Approver'), (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/approverDashboard.html'));
-});
-
-app.get('/changePassword.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/changePassword.html'));
-});
-
-app.get('/updateInfo.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/updateInfo.html'));
 });
 
 const PORT = process.env.PORT || 3000;

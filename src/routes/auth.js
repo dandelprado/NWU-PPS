@@ -1,4 +1,3 @@
-// src/routes/auth.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../db/database');
@@ -70,6 +69,7 @@ router.post('/change-password', (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        // Update the session
         req.session.user.passwordChanged = true;
         res.json({ success: true, message: 'Password updated successfully', redirectUrl: '/updateInfo.html' });
     });

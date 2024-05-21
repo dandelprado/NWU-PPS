@@ -1,35 +1,13 @@
-function clearSessionAndRedirect(req, res) {
-    req.session.destroy(err => {
-        if (err) {
-            console.error('Failed to destroy session:', err);
-            return res.status(500).send('Failed to reset session.');
+function enforceInitialSetupStep(req, res, next) {
+    if (req.session.user) {
+        if (!req.session.user.passwordChanged && req.path !== '/changePassword.html' && req.path !== '/auth/change-password') {
+            return res.redirect('/changePassword.html');
         }
-        return res.redirect('/login.html');
-    });
-}
-
-function checkPasswordChange(req, res, next) {
-    if (req.session.user && !req.session.user.passwordChanged) {
-        clearSessionAndRedirect(req, res);
-    } else {
-        next();
+        if (req.session.user.passwordChanged && !req.session.user.infoCompleted && req.path !== '/updateInfo.html' && req.path !== '/auth/update-profile') {
+            return res.redirect('/updateInfo.html');
+        }
     }
+    next();
 }
 
-function checkProfileCompletion(req, res, next) {
-    if (req.session.user && req.session.user.passwordChanged && !req.session.user.infoCompleted) {
-        clearSessionAndRedirect(req, res);
-    } else {
-        next();
-    }
-}
-
-function enforceInitialSetup(req, res, next) {
-    if (req.session.user && (!req.session.user.passwordChanged || !req.session.user.infoCompleted)) {
-        clearSessionAndRedirect(req, res);
-    } else {
-        next();
-    }
-}
-
-module.exports = { checkPasswordChange, checkProfileCompletion, enforceInitialSetup };
+module.exports = { enforceInitialSetupStep };

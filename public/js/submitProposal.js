@@ -36,7 +36,7 @@ function addFormSubmissionHandler() {
             .then(data => {
                 if (data.success) {
                     alert('Proposal submitted successfully!');
-                    window.location.href = 'dashboard.html'; // Redirect to dashboard 
+                    window.location.href = 'dashboard.html';
                 } else {
                     alert('Error submitting proposal: ' + data.error);
                 }

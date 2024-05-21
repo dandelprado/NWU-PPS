@@ -49,7 +49,7 @@ document.getElementById('updateInfoForm').addEventListener('submit', function (e
                                 window.location.href = '/approverDashboard.html';
                             }
                         } else {
-                            window.location.href = '/'; // Redirect to home page
+                            window.location.href = '/';
                         }
                     });
             } else {
