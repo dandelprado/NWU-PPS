@@ -22,6 +22,7 @@ function startSession(req, user, redirectUrl, res) {
         }
     });
 }
+
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
     const sql = `
@@ -42,7 +43,14 @@ router.post('/login', (req, res) => {
             if (user.PasswordChanged && !user.InfoCompleted) {
                 redirectUrl = '/updateInfo.html';
             } else if (user.PasswordChanged && user.InfoCompleted) {
-                redirectUrl = '/dashboard.html';
+                // Redirect based on role
+                if (user.RoleID === 5 || user.RoleID === 7) {
+                    redirectUrl = '/dashboard.html';
+                } else if (user.RoleID >= 8 && user.RoleID <= 10) {
+                    redirectUrl = '/approverDashboard.html';
+                } else {
+                    redirectUrl = '/dashboard.html';
+                }
             }
             startSession(req, user, redirectUrl, res);
         } else {

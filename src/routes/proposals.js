@@ -146,6 +146,24 @@ router.post('/approve/:id', isLoggedIn, async (req, res) => {
     }
 });
 
+router.post('/submit-comment/:id', isLoggedIn, (req, res) => {
+    const proposalId = req.params.id;
+    const userId = req.session.user.id;
+    const { comment } = req.body;
+    const timestamp = new Date().toISOString();
+    const sql = `
+        INSERT INTO ProposalsLog (ProposalID, UserID, Comment, Timestamp)
+        VALUES (?, ?, ?, ?)`;
+    db.run(sql, [proposalId, userId, comment, timestamp], function (err) {
+        if (err) {
+            res.status(500).json({ error: 'Failed to submit comment' });
+        } else {
+            res.json({ success: true, message: 'Comment submitted successfully' });
+            // Trigger notification logic here
+        }
+    });
+});
+
 router.get('/myApprovals', isLoggedIn, (req, res) => {
     const userId = req.session.user.id;
     const sql = `SELECT * FROM Proposals WHERE NextApproverUserID = ?`;
@@ -159,21 +177,37 @@ router.get('/myApprovals', isLoggedIn, (req, res) => {
     });
 });
 
-router.get('/api/proposals', isLoggedIn, async (req, res) => {
-    try {
-        const userID = req.session.user.id;
-        const sql = 'SELECT * FROM Proposals WHERE SubmittedByUserID = ?';
-        db.all(sql, [userID], (err, rows) => {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).json({ success: false, error: 'Database error' });
-            }
+router.get('/api/proposals', isLoggedIn, (req, res) => {
+    const userId = req.session.user.id;
+    const sql = `
+        SELECT Proposals.*, 
+               (SELECT Username FROM Users WHERE UserID = Proposals.CurrentApproverUserID) AS CurrentApprover
+        FROM Proposals 
+        WHERE SubmittedByUserID = ?`;
+    db.all(sql, [userId], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to fetch proposals' });
+        } else {
             res.json({ success: true, proposals: rows });
-        });
-    } catch (error) {
-        console.error('Failed to fetch proposals:', error);
-        res.status(500).json({ success: false, error: 'Failed to fetch proposals' });
-    }
+        }
+    });
+});
+
+router.get('/api/proposals/:id/comments', isLoggedIn, (req, res) => {
+    const proposalId = req.params.id;
+    const sql = `
+        SELECT Comment, Timestamp, 
+               (SELECT Username FROM Users WHERE UserID = ProposalsLog.UserID) AS Username
+        FROM ProposalsLog 
+        WHERE ProposalID = ? 
+        ORDER BY Timestamp DESC`;
+    db.all(sql, [proposalId], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to fetch comments' });
+        } else {
+            res.json({ success: true, comments: rows });
+        }
+    });
 });
 
 module.exports = router;
