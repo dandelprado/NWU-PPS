@@ -12,7 +12,8 @@ function startSession(req, user, redirectUrl, res) {
         role: user.RoleID,
         passwordChanged: user.PasswordChanged,
         infoCompleted: user.InfoCompleted,
-        organizationName: user.OrganizationName
+        organizationName: user.OrganizationName,
+        organizationId: user.OrganizationID // Add organizationId to session
     };
     req.session.save(err => {
         if (!err) {
@@ -26,7 +27,7 @@ function startSession(req, user, redirectUrl, res) {
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
     const sql = `
-        SELECT Users.*, Organizations.Name AS OrganizationName 
+        SELECT Users.*, Organizations.Name AS OrganizationName, Organizations.OrganizationID 
         FROM Users 
         LEFT JOIN Organizations ON Users.OrganizationID = Organizations.OrganizationID 
         WHERE Users.Username = ?
@@ -58,7 +59,6 @@ router.post('/login', (req, res) => {
         }
     });
 });
-
 router.post('/change-password', (req, res) => {
     if (!req.session.user || !req.session.user.id) {
         return res.status(403).json({ error: 'Unauthorized request' });

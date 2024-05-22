@@ -30,40 +30,135 @@ const upload = multer({ storage: storage });
 
 async function determineNextApprover(organizationId, currentApproverRole) {
     try {
-        const org = await db.get(`SELECT CollegeID, DepartmentID FROM Organizations WHERE OrganizationID = ?`, [organizationId]);
+        const org = await new Promise((resolve, reject) => {
+            db.get(`SELECT CollegeID, DepartmentID FROM Organizations WHERE OrganizationID = ?`, [organizationId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else if (!row) {
+                    reject(new Error('Organization not found'));
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+
+        // Prioritize the advisor as the first approver
+        if (currentApproverRole === 'Adviser' || !currentApproverRole) {
+            return await new Promise((resolve, reject) => {
+                db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Adviser') AND OrganizationID = ?`, [organizationId], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row);
+                    }
+                });
+            });
+        }
 
         if (currentApproverRole === 'Adviser') {
             if (org.DepartmentID) {
-                return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Head') AND DepartmentID = ?`, [org.DepartmentID]);
+                return await new Promise((resolve, reject) => {
+                    db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Head') AND DepartmentID = ?`, [org.DepartmentID], (err, row) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(row);
+                        }
+                    });
+                });
             } else if (org.CollegeID) {
-                return await db.get(`SELECT DeanUserID FROM Colleges WHERE CollegeID = ?`, [org.CollegeID]);
+                return await new Promise((resolve, reject) => {
+                    db.get(`SELECT DeanUserID FROM Colleges WHERE CollegeID = ?`, [org.CollegeID], (err, row) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(row);
+                        }
+                    });
+                });
             } else {
-                return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'OSA')`);
+                return await new Promise((resolve, reject) => {
+                    db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'OSA')`, [], (err, row) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(row);
+                        }
+                    });
+                });
             }
         }
 
         if (currentApproverRole === 'Head' || currentApproverRole === 'Dean') {
-            return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'OSA')`);
+            return await new Promise((resolve, reject) => {
+                db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'OSA')`, [], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row);
+                    }
+                });
+            });
         }
 
         if (currentApproverRole === 'OSA') {
             if (org.FundingRequired) {
-                return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Finance')`);
+                return await new Promise((resolve, reject) => {
+                    db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Finance')`, [], (err, row) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(row);
+                        }
+                    });
+                });
             }
-            return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'VPAA')`);
+            return await new Promise((resolve, reject) => {
+                db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'VPAA')`, [], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row);
+                    }
+                });
+            });
         }
 
         if (currentApproverRole === 'Finance') {
-            return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'VPAA')`);
+            return await new Promise((resolve, reject) => {
+                db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'VPAA')`, [], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row);
+                    }
+                });
+            });
         }
 
         if (currentApproverRole === 'VPAA') {
-            return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'President')`);
+            return await new Promise((resolve, reject) => {
+                db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'President')`, [], (err, row) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(row);
+                    }
+                });
+            });
         }
 
         if (currentApproverRole === 'President') {
             if (org.FacilityRequired) {
-                return await db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'VPA')`);
+                return await new Promise((resolve, reject) => {
+                    db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'VPA')`, [], (err, row) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(row);
+                        }
+                    });
+                });
             }
             return null;
         }
@@ -87,7 +182,9 @@ router.post('/submit', isLoggedIn, upload.single('fileUpload'), async (req, res)
     const documentPath = req.file ? req.file.path : '';
 
     try {
+        console.log('Determining next approver for organization ID:', req.session.user.organizationId);
         const nextApprover = await determineNextApprover(req.session.user.organizationId, 'Adviser');
+        console.log('Next approver determined:', nextApprover);
 
         const sql = `
             INSERT INTO Proposals (Title, SubmittedByUserID, Status, SubmissionDate, LastUpdatedDate, DocumentPath, FundingRequired, FacilityRequired, NextApproverUserID)
@@ -95,16 +192,38 @@ router.post('/submit', isLoggedIn, upload.single('fileUpload'), async (req, res)
         `;
         await new Promise((resolve, reject) => {
             db.run(sql, [title, submittedByUserId, status, currentDate, currentDate, documentPath, fundingRequest ? 1 : 0, facilityRequest ? 1 : 0, nextApprover ? nextApprover.UserID : null], function (err) {
-                if (err) reject(err);
-                else resolve();
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
             });
         });
 
         res.json({ success: true, message: 'Proposal submitted successfully' });
     } catch (error) {
+        console.error('Error submitting proposal:', error);
         res.status(500).json({ error: 'Error submitting proposal: ' + error.message });
     }
 });
+
+router.get('/api/proposals', isLoggedIn, (req, res) => {
+    const userId = req.session.user.id;
+    const sql = `
+        SELECT * FROM Proposals 
+        WHERE SubmittedByUserID = ? 
+        OR NextApproverUserID = ?
+    `;
+
+    db.all(sql, [userId, userId], (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to fetch proposals' });
+        } else {
+            res.json({ success: true, proposals: rows });
+        }
+    });
+});
+
 
 router.post('/approve/:id', isLoggedIn, async (req, res) => {
     const proposalId = req.params.id;
@@ -174,22 +293,6 @@ router.get('/myApprovals', isLoggedIn, (req, res) => {
             return;
         }
         res.json({ success: true, proposals: rows });
-    });
-});
-
-router.get('/api/proposals', isLoggedIn, (req, res) => {
-    const userId = req.session.user.id;
-    const sql = `
-        SELECT Proposals.*, 
-               (SELECT Username FROM Users WHERE UserID = Proposals.CurrentApproverUserID) AS CurrentApprover
-        FROM Proposals 
-        WHERE SubmittedByUserID = ?`;
-    db.all(sql, [userId], (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to fetch proposals' });
-        } else {
-            res.json({ success: true, proposals: rows });
-        }
     });
 });
 
