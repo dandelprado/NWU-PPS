@@ -24,68 +24,73 @@ function createUsers() {
         //Orgs
         { username: "ssc_president", role: "President", password: "sscpresident1234", organizationId: null, departmentId: null },
         { username: "ssc_adviser", role: "Adviser", password: "sscadviser1234", organizationId: null, departmentId: null },
-        { username: "thereview_eic", role: "Editor-in-Chief", password: "therevieweic1234", organizationId: null, departmentId: null },
-        { username: "thereview_adviser", role: "Adviser", password: "thereviewadviser1234", organizationId: null, departmentId: null },
         //Colege-wide Orgs
         { username: "casso_president", role: "President", password: "cassopresident1234", organizationId: 2, departmentId: null },
         { username: "casso_adviser", role: "Adviser", password: "cassoadviser1234", organizationId: 2, departmentId: null },
-        { username: "cobeso_president", role: "President", password: "cobesopresident1234", organizationId: 6, departmentId: null },
-        { username: "cobeso_adviser", role: "Adviser", password: "cobesoadviser1234", organizationId: 6, departmentId: null },
-        { username: "cahsso_president", role: "President", password: "cahssopresident1234", organizationId: 7, departmentId: null },
-        { username: "cahsso_adviser", role: "Adviser", password: "cahssoadviser1234", organizationId: 7, departmentId: null },
-        { username: "cihtmso_president", role: "President", password: "cihtmsopresident1234", organizationId: 8, departmentId: null },
-        { username: "cihtmso_adviser", role: "Adviser", password: "cihtmsoadviser1234", organizationId: 8, departmentId: null },
-        { username: "ccjeso_president", role: "President", password: "ccjesopresident1234", organizationId: 9, departmentId: null },
-        { username: "ccjeso_adviser", role: "Adviser", password: "ccjesoadviser1234", organizationId: 9, departmentId: null },
-        { username: "comeso_president", role: "President", password: "comesopresident1234", organizationId: 10, departmentId: null },
-        { username: "comeso_adviser", role: "Adviser", password: "comesoadviser1234", organizationId: 10, departmentId: null },
-        { username: "cteso_president", role: "President", password: "ctesopresident1234", organizationId: 11, departmentId: null },
-        { username: "cteso_adviser", role: "Adviser", password: "ctesoadviser1234", organizationId: 11, departmentId: null },
         //Department Orgs
         { username: "cs_head", role: "Head", password: "cshead1234", organizationId: 3, departmentId: 1 },
         { username: "cs_adviser", role: "Adviser", password: "csadviser1234", organizationId: 3, departmentId: 1 },
-        { username: "ps_head", role: "Head", password: "pshead1234", organizationId: 4, departmentId: 2 },
-        { username: "ps_adviser", role: "Adviser", password: "psadviser1234", organizationId: 4, departmentId: 2 },
-        { username: "bio_head", role: "Head", password: "biohead1234", organizationId: 5, departmentId: 3 },
-        { username: "bio_adviser", role: "Adviser", password: "bioadviser1234", organizationId: 5, departmentId: 3 },
-        { username: "psych_head", role: "Head", password: "psychhead1234", organizationId: 12, departmentId: 4 }
+        // Add Deans
+        { username: "dean_cas", role: "Dean", password: "deanpass1234", collegeId: 1 },
 
     ];
-
     users.forEach(user => {
-        db.get('SELECT RoleID FROM Roles WHERE Title = ?', [user.role], (err, roleRow) => {
+        db.get("SELECT UserID FROM Users WHERE Username = ?", [user.username], (err, row) => {
             if (err) {
-                console.error('Error fetching role for ' + user.username + ': ' + err.message);
+                console.error('Error checking for existing user: ' + err.message);
                 return;
             }
-            if (!roleRow) {
-                console.error(`Role not found for ${user.role}. Skipping user ${user.username}.`);
+            if (row) {
+                console.log(`User ${user.username} already exists. Skipping creation.`);
                 return;
             }
 
-            const roleID = roleRow.RoleID;
-            const hashedPassword = bcrypt.hashSync(user.password, 10);
-
-            // Check if user already exists
-            db.get('SELECT * FROM Users WHERE Username = ?', [user.username], (err, userRow) => {
+            bcrypt.hash(user.password, 10, (err, hashedPassword) => {
                 if (err) {
-                    console.error('Error checking user: ' + err.message);
+                    console.error('Error hashing password: ' + err.message);
                     return;
                 }
-                if (userRow) {
-                    console.log(`User ${user.username} already exists. Skipping.`);
-                } else {
-                    // Insert the new user
-                    db.run(`INSERT INTO Users (Username, Password, RoleID, OrganizationID, PasswordChanged, InfoCompleted) VALUES (?, ?, ?, ?, FALSE, FALSE)`,
-                        [user.username, hashedPassword, roleID, user.organizationId], (err) => {
-                            if (err) {
-                                console.error('Insert error for user ' + user.username + ': ' + err.message);
-                                return;
+                const { username, role, collegeId, organizationId, departmentId } = user;
+                let roleId = null;
+
+                db.get("SELECT RoleID FROM Roles WHERE Title = ?", [role], (err, row) => {
+                    if (err) {
+                        console.error('Error retrieving role ID: ' + err.message);
+                        return;
+                    }
+                    if (row) {
+                        roleId = row.RoleID;
+
+                        db.run(
+                            "INSERT INTO Users (Username, Password, RoleID, OrganizationID) VALUES (?, ?, ?, ?)",
+                            [username, hashedPassword, roleId, organizationId],
+                            function (err) {
+                                if (err) {
+                                    console.error('Error inserting user: ' + err.message);
+                                    return;
+                                }
+                                console.log(`Inserted user ${username} with role ${role}`);
+                                if (role === "Dean") {
+                                    const userId = this.lastID;
+                                    db.run(
+                                        "UPDATE Colleges SET DeanUserID = ? WHERE CollegeID = ?",
+                                        [userId, collegeId],
+                                        (err) => {
+                                            if (err) {
+                                                console.error('Error updating college: ' + err.message);
+                                                return;
+                                            }
+                                            console.log(`Assigned Dean ${username} to CollegeID ${collegeId}`);
+                                        }
+                                    );
+                                }
                             }
-                            console.log(`User ${user.username} added successfully.`);
-                        });
-                }
+                        );
+                    } else {
+                        console.error('Role not found: ' + role);
+                    }
+                });
             });
         });
     });
-} 
+}
