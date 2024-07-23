@@ -133,7 +133,7 @@ This project uses SQLite for the database.
   <img src="screenshots/login_screen2.png" alt="Login" style="width: 18%; margin-right: 1%;" />
   <img src="screenshots/login_screen3.png" alt="Login" style="width: 18%; margin-right: 1%;" />
   <img src="screenshots/change_password.png" alt="Change Password" style="width: 18%; margin-right: 1%;" />
-  <img src="screenshots/change_password.png2" alt="Change Password" style="width: 18%; margin-right: 1%;" />
+  <img src="screenshots/change_password2.png" alt="Change Password" style="width: 18%; margin-right: 1%;" />
   <img src="screenshots/change_password3.png" alt="Change Password" style="width: 18%; margin-right: 1%;" />
   <img src="screenshots/update_details.png" alt="Update Profile Screenshot" style="width: 18%; margin-right: 1%;" />
   <img src="screenshots/update_details2.png" alt="Update Profile Screenshot" style="width: 18%; margin-right: 1%;" />
