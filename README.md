@@ -141,5 +141,7 @@ This project uses SQLite for the database.
   <img src="screenshots/approver_dashboard.png" alt="User Dashboard Screenshot" style="width: 48%; margin-bottom: 1%;" />
   <img src="screenshots/submit_proposal.png" alt="Submit Proposal Screenshot" style="width: 48%; margin-bottom: 1%;" />
   <img src="screenshots/submit_proposal2.png" alt="Submit Proposal Screenshot" style="width: 48%; margin-bottom: 1%;" />
+</div>
+<div style="display: flex; justify-content: center;">
   <img src="screenshots/view_proposal.png" alt="View Proposals Screenshot" style="width: 48%; margin-bottom: 1%;" />
 </div>
