@@ -7,7 +7,6 @@ NWU-PPS is a web-based application designed to streamline the submission, review
   - [User Authentication](#user-authentication)
   - [Dashboard](#dashboard)
   - [Proposals](#proposals)
-  - [License](#license)
 
 ## Features
 
