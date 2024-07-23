@@ -1,22 +1,35 @@
-// src/app.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const authRoutes = require('./routes/auth');
 const proposalRoutes = require('./routes/proposals');
-const sessionConfig = require('./middlewares/session');
+const session = require('express-session');
 const { checkRole, checkNotRole } = require('./middlewares/roleCheck');
 const { enforceInitialSetupStep } = require('./middlewares/checkCompletion');
 const authCheck = require('./middlewares/authCheck');
+
 const app = express();
 
-sessionConfig(app);
+// Configure session
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your_secret_key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        sameSite: 'lax'
+    }
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Serve uploaded proposal files
+app.use('/download', express.static(path.join(__dirname, '../proposal_uploads')));
 
 // Public routes
 app.get('/login.html', (req, res) => {

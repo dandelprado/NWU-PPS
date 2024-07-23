@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <h3>${proposal.Title}</h3>
                 <p>Status: ${proposal.Status}</p>
                 <p>Submitted By: ${proposal.SubmittedByUserID}</p>
-                <p><a href="${proposal.DocumentPath}" target="_blank">View Document</a></p>
+                <p><a href="/download/${proposal.DocumentPath}" target="_blank">View Document</a></p>
                 ${isApprover() ? approverActions(proposal.ProposalID) : ''}
                 <div id="comments-${proposal.ProposalID}" class="comments-container"></div>
             `;
@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function isApprover() {
-        // Check if the user is an approver based on the role ID
         const userRole = parseInt(sessionStorage.getItem('userRole'), 10);
         return userRole >= 8 && userRole <= 10;
     }

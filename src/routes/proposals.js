@@ -14,19 +14,27 @@ function isLoggedIn(req, res, next) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const basePath = path.join(__dirname, '../proposal_uploads', req.session.user.organizationName);
-        const userPath = path.join(basePath, req.session.user.lastName + '_' + req.session.user.firstName);
+        const basePath = path.join(__dirname, '../../proposal_uploads', req.session.user.organizationName);
+        const userPath = path.join(basePath, `${req.session.user.lastName}_${req.session.user.firstName}`);
         fs.mkdirSync(basePath, { recursive: true });
         fs.mkdirSync(userPath, { recursive: true });
         cb(null, userPath);
     },
     filename: function (req, file, cb) {
-        const newFilename = req.body.title.replace(/\s+/g, '_') + path.extname(file.originalname);
+        const newFilename = `${req.body.title.replace(/\s+/g, '_')}${path.extname(file.originalname)}`;
         cb(null, newFilename);
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype !== 'application/pdf') {
+            return cb(new Error('Only PDF files are allowed!'), false);
+        }
+        cb(null, true);
+    }
+});
 
 async function determineNextApprover(organizationId, currentApproverRole) {
     try {
@@ -42,7 +50,6 @@ async function determineNextApprover(organizationId, currentApproverRole) {
             });
         });
 
-        // Prioritize the advisor as the first approver
         if (currentApproverRole === 'Adviser' || !currentApproverRole) {
             return await new Promise((resolve, reject) => {
                 db.get(`SELECT UserID FROM Users WHERE RoleID = (SELECT RoleID FROM Roles WHERE Title = 'Adviser') AND OrganizationID = ?`, [organizationId], (err, row) => {
@@ -179,12 +186,10 @@ router.post('/submit', isLoggedIn, upload.single('fileUpload'), async (req, res)
     const submittedByUserId = req.session.user.id;
     const status = 'Pending with Adviser';
     const currentDate = new Date().toISOString();
-    const documentPath = req.file ? req.file.path : '';
+    const documentPath = req.file ? path.relative(path.join(__dirname, '../../'), req.file.path) : '';
 
     try {
-        console.log('Determining next approver for organization ID:', req.session.user.organizationId);
         const nextApprover = await determineNextApprover(req.session.user.organizationId, 'Adviser');
-        console.log('Next approver determined:', nextApprover);
 
         const sql = `
             INSERT INTO Proposals (Title, SubmittedByUserID, Status, SubmissionDate, LastUpdatedDate, DocumentPath, FundingRequired, FacilityRequired, NextApproverUserID)
@@ -202,7 +207,6 @@ router.post('/submit', isLoggedIn, upload.single('fileUpload'), async (req, res)
 
         res.json({ success: true, message: 'Proposal submitted successfully' });
     } catch (error) {
-        console.error('Error submitting proposal:', error);
         res.status(500).json({ error: 'Error submitting proposal: ' + error.message });
     }
 });
