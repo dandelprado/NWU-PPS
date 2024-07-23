@@ -127,3 +127,5 @@ This project uses SQLite for the database.
     - `InfoCompleted`: Boolean indicating whether the user has completed their profile information.
 
 ## Screenshots
+
+![Login Screen](screenshots/login_screen.png)
