@@ -125,3 +125,5 @@ This project uses SQLite for the database.
     - `OrganizationID`: Foreign key referencing the organization the user belongs to.
     - `PasswordChanged`: Boolean indicating whether the user has changed their initial password.
     - `InfoCompleted`: Boolean indicating whether the user has completed their profile information.
+
+## Screenshots
